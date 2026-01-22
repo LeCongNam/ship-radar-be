@@ -1,0 +1,227 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider     = "prisma-client"
+  output       = "../generated/prisma"
+  moduleFormat = "cjs"
+}
+
+datasource db {
+  provider = "mysql"
+}
+
+model User {
+  id          Int       @id @default(autoincrement())
+  email       String    @unique
+  firstName   String?
+  lastName    String?
+  username    String    @unique
+  bio         String?
+  avatar      String?
+  dob         DateTime?
+  phoneNumber String?   @unique
+  password    String?
+
+  // Quan hệ 1-nhiều với bảng trung gian UserRoles
+  roles         UserRoles[]
+  tokens        Token[]
+  userDevices   UserDevice[]
+  isVerifyEmail Boolean      @default(false)
+  isVerifyPhone Boolean      @default(false)
+
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+  shops     Shop[]
+}
+
+model Role {
+  id   Int    @id @default(autoincrement())
+  name String @unique
+
+  description String?
+
+  // Quan hệ với bảng trung gian UserRoles
+  users       UserRoles[]
+  // Quan hệ 1-nhiều với RolePermissions
+  permissions RolePermissions[]
+}
+
+model UserRoles {
+  userId Int
+  roleId Int
+
+  // Định nghĩa quan hệ ngược lại
+  user User @relation(fields: [userId], references: [id])
+  role Role @relation(fields: [roleId], references: [id])
+
+  @@id([userId, roleId])
+  @@index([roleId], name: "idx_roleId")
+}
+
+model RolePermissions {
+  id         Int    @id @default(autoincrement())
+  roleId     Int
+  permission String
+
+  // Định nghĩa quan hệ với Role
+  role Role @relation(fields: [roleId], references: [id])
+}
+
+model Token {
+  id            Int      @id @default(autoincrement())
+  userId        Int
+  refreshToken  String   @unique
+  createdAt     DateTime @default(now())
+  expiresAt     DateTime
+  isRevoked     Boolean  @default(false)
+  isBlacklisted Boolean  @default(false)
+  deviceId      String?
+  updatedAt     DateTime @updatedAt
+
+  userDevice UserDevice? @relation(fields: [deviceId], references: [id])
+  user       User        @relation(fields: [userId], references: [id])
+}
+
+enum DeviceType {
+  ANDROID
+  IOS
+  WEB
+}
+
+model UserDevice {
+  id         String     @id
+  userId     Int
+  deviceType DeviceType
+  osVersion  String?
+  lastUsedAt DateTime   @default(now())
+  createdAt  DateTime   @default(now())
+
+  user   User    @relation(fields: [userId], references: [id])
+  tokens Token[]
+}
+
+model Product {
+  id          String  @id @default(uuid())
+  name        String
+  description String?
+  price       Decimal @db.Decimal(10, 2)
+  sku         String  @unique
+  stock       Int     @default(0)
+
+  categoryId String
+
+  category Category @relation(fields: [categoryId], references: [id])
+
+  isActive   Boolean     @default(true)
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @default(now()) @updatedAt
+  orderItems OrderItem[]
+}
+
+model Category {
+  id          String  @id @default(uuid())
+  name        String  @unique
+  description String?
+
+  products Product[]
+
+  isActive Boolean @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+}
+
+model Shop {
+  id      String  @id
+  name    String
+  ownerId Int
+  address String?
+  phone   String?
+  email   String?
+
+  owner User @relation(fields: [ownerId], references: [id])
+
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+  orders    Order[]
+}
+
+model Order {
+  id         Int      @id @default(autoincrement())
+  totalPrice Decimal  @db.Decimal(10, 2) // Tổng giá trị đơn hàng tại thời điểm đặt hàng
+  status     String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @default(now()) @updatedAt
+
+  receiverName    String
+  receiverPhone   String
+  receiverAddress String
+
+  noted String?
+
+  shopId     String
+  shop       Shop        @relation(fields: [shopId], references: [id])
+  orderItems OrderItem[]
+
+  shippings Shipping[]
+}
+
+model OrderItem {
+  id        Int     @id @default(autoincrement())
+  orderId   Int
+  productId String
+  quantity  Int
+  price     Decimal @db.Decimal(10, 2) // Giá tại thời điểm đặt hàng
+
+  order   Order   @relation(fields: [orderId], references: [id])
+  product Product @relation(fields: [productId], references: [id])
+}
+
+model DeliveryBrand {
+  id           Int     @id @default(autoincrement())
+  name         String  @unique
+  website      String?
+  hotline      String?
+  supportEmail String?
+  supportPhone String?
+
+  time_pickup_from DateTime?
+  time_pickup_to   DateTime?
+
+  operating_hours String?
+
+  opening_time DateTime?
+  closing_time DateTime?
+
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+}
+
+model Shipping {
+  id      Int @id @default(autoincrement())
+  orderId Int
+
+  deliveryBrandId Int
+  trackingNumber  String  @unique
+  shipperName     String
+  shipperPhone    String
+  licensePlate    String? // Biển số xe
+
+  noted     String?
+  type      String
+  isCod     Boolean  @default(false)
+  codAmount Decimal? @db.Decimal(10, 2)
+
+  status    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+
+  order Order @relation(fields: [orderId], references: [id])
+}
