@@ -11,18 +11,21 @@ import { map } from 'rxjs/operators';
 export class TransformResponseInterceptor implements NestInterceptor {
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
     const request = context.switchToHttp().getRequest();
+    console.log(
+      '🚀 ~ TransformResponseInterceptor ~ intercept ~ request:',
+      request.query,
+      { depth: null },
+    );
     const response = context.switchToHttp().getResponse();
 
     return next.handle().pipe(
       map((data) => {
         // nếu data đã được format sẵn (có data, statusCode, metadata) thì bỏ qua
-        if (
-          data &&
-          typeof data === 'object' &&
-          'data' in data &&
-          'metadata' in data &&
-          'statusCode' in data
-        ) {
+        if (data && 'data' in data && 'metadata' in data) {
+          if (!('statusCode' in data)) {
+            data.statusCode = response.statusCode;
+          }
+
           return data;
         }
 
@@ -44,8 +47,17 @@ export class TransformResponseInterceptor implements NestInterceptor {
           }
 
           if ('total' in data) res.metadata.total = data.total;
-          if ('page' in data) res.metadata.page = data.page;
-          if ('pageSize' in data) res.metadata.pageSize = data.pageSize;
+          if ('page' in data) {
+            res.metadata.page = data.page;
+          } else {
+            res.metadata.page = Number(request?.query?.page) || null;
+          }
+          if ('pageSize' in data) {
+            res.metadata.pageSize = data?.pageSize;
+          } else {
+            res.metadata.pageSize = Number(request?.query?.pageSize) || null;
+          }
+
           if ('total' in data && 'pageSize' in data)
             res.metadata.totalPages = Math.ceil(data.total / data.pageSize);
         } else {

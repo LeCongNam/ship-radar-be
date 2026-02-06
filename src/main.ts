@@ -1,18 +1,19 @@
-import { Logger } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
+import { Logger, LoggerErrorInterceptor } from 'nestjs-pino';
 import { AppModule } from './app.module';
-import { LoggingInterceptor } from './infrastructure/shared/log-request.interceptor';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, { bufferLogs: true });
 
   app.setGlobalPrefix('api');
-  app.useGlobalInterceptors(new LoggingInterceptor());
+  app.useLogger(app.get(Logger));
+  app.useGlobalInterceptors(new LoggerErrorInterceptor());
+  // app.useGlobalInterceptors(new LoggingInterceptor());
   app.enableCors();
-
+  app.flushLogs();
   const PORT = process.env.PORT || 3001;
   await app.listen(PORT, () => {
-    Logger.log(`Server is running on port: ${PORT}`);
+    console.log(`Server is running on port: ${PORT}`);
   });
 }
 bootstrap();

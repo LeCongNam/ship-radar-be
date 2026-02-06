@@ -34,14 +34,6 @@ export class JwtStrategy extends PassportStrategy(
   }
 
   async validate(payload: TokenPayload): Promise<User> {
-    const userInfoCacheKey = this.cacheService.createCacheKeyAuth(
-      payload.email,
-    );
-    const cacheResult = await this.cacheManager.get<User>(userInfoCacheKey);
-    if (cacheResult) {
-      return cacheResult;
-    }
-
     const user = await this._userRepo.findOneBy({ id: payload.userId });
     if (!user || !user.isActive) {
       throw new UnauthorizedException();

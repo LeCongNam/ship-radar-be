@@ -1,6 +1,6 @@
 import { PrismaMariaDb } from '@prisma/adapter-mariadb';
 import 'dotenv/config';
-import { PrismaClient } from '../../generated/prisma/client';
+import { PrismaClient } from '../../../generated/prisma/client';
 
 const adapter = new PrismaMariaDb({
   host: process.env.DATABASE_HOST,
@@ -11,10 +11,11 @@ const adapter = new PrismaMariaDb({
   connectTimeout: 60000,
   ssl: false,
   allowPublicKeyRetrieval: true,
-  logger: {
-    query: (msg: string) => console.log('[Prisma Query]: ', msg),
-  },
 });
-const prisma = new PrismaClient({ adapter });
+
+const prisma = new PrismaClient({
+  adapter,
+  log: ['query', 'info', 'warn', 'error'],
+});
 
 export { prisma };

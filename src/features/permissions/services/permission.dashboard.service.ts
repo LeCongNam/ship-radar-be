@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PERMISSIONS_LIST } from '../../../infrastructure/constants';
 import { RolePermissionRepository } from '../../../infrastructure/repositories';
-import { prisma } from '../../../lib/prisma';
+import { prisma } from '../../../lib/prisma/prisma';
 import { CreatePermissionDto } from '../dto/create-permission.dto';
 import { UpdatePermissionDto } from '../dto/update-permission.dto';
 

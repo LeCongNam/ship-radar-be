@@ -7,17 +7,14 @@ import {
 } from 'class-validator';
 
 export class CreateShopDto {
-  @IsNotEmpty()
-  @IsString()
-  id: string;
+  id?: number;
 
   @IsNotEmpty()
   @IsString()
   @MaxLength(255)
   name: string;
 
-  @IsNotEmpty()
-  ownerId: number;
+  ownerId?: number;
 
   @IsOptional()
   @IsString()

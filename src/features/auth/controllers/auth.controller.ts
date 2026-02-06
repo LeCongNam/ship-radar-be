@@ -98,7 +98,7 @@ export class AuthController extends BaseController {
       throw new HttpExceptionCustom('Unauthorized', 401);
     }
 
-    return this.authService.getProfile(userInfo);
+    return this.authService.getProfile(userInfo.user);
   }
 
   @Post('refresh')
@@ -116,8 +116,9 @@ export class AuthController extends BaseController {
 
     try {
       const user = this._jwtService.verify(body.refreshToken, {
-        secret: process.env.JWT_SECRET,
+        secret: process.env.JWT_REFRESH_SECRET,
       });
+      console.log('🚀 ~ AuthController ~ refreshToken ~ user:', user);
 
       return this.authService.refreshToken(user, device, body.refreshToken);
     } catch (error) {

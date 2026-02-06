@@ -8,11 +8,16 @@ import {
   Patch,
   Post,
   Put,
+  Req,
+  UseGuards,
 } from '@nestjs/common';
+import { type Request } from 'express';
 import { BaseController } from '../../../infrastructure/shared/base.controller';
+import { JwtAuthenticationGuard } from '../../auth/guards/jwt-auth.guard';
 import { UserDashboardService } from '../services/user.dashboard.service';
 
 @Controller('dashboard/users')
+@UseGuards(JwtAuthenticationGuard)
 export class UserDashboardController extends BaseController {
   constructor(private readonly userDashboardService: UserDashboardService) {
     super();
@@ -39,8 +44,9 @@ export class UserDashboardController extends BaseController {
   }
 
   @Get()
-  findAll() {
-    return this.userDashboardService.findAll();
+  findAll(@Req() request: Request) {
+    const usr = this.getUserInfo(request);
+    return this.userDashboardService.findAll(usr.user);
   }
 
   @Put(':userId/status')

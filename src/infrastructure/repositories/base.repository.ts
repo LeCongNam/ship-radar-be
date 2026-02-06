@@ -40,11 +40,16 @@ export abstract class BaseRepository<
   }
 
   async count(args?: any): Promise<number> {
-    return this.model.count(args);
+    return await this.model.count(args);
   }
 
   async create(data: Partial<T>): Promise<T> {
-    return this.model.create({ data });
+    // eslint-disable-next-line no-useless-catch
+    try {
+      return this.model.create({ data });
+    } catch (error) {
+      throw error;
+    }
   }
 
   async update(id: any, data: any): Promise<T> {

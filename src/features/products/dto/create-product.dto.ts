@@ -35,4 +35,10 @@ export class CreateProductDto {
   @IsNotEmpty()
   @IsString()
   categoryId: string;
+
+  productCode?: string;
+
+  ownerId?: number;
+
+  productCodeFilter?: string;
 }

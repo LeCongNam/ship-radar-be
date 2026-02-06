@@ -35,31 +35,20 @@ export class AuthService {
     private cacheService: CacheService,
   ) {}
 
-  async login(loginDto: LoginAuthDto, device: DeviceInfo) {
-    let hasUser;
-
+  async login(
+    loginDto: LoginAuthDto,
+    device: DeviceInfo,
+  ): Promise<{
+    data: {
+      user: Omit<User, 'password'>;
+      token: { accessToken: string; refreshToken: string };
+    };
+  }> {
     const userInfoCacheKey = this.cacheService.createCacheKeyAuth(
       loginDto.email,
     );
 
-    const userInfoCache = await this.cacheManager.get<User>(userInfoCacheKey);
-
-    if (userInfoCache) {
-      hasUser = userInfoCache;
-      this._logger.log(
-        `User info retrieved from cache for email: ${loginDto.email}`,
-      );
-
-      await this.cacheManager.del(userInfoCacheKey);
-
-      const blackListToken = this.cacheService.createKeyBlacklistToken(
-        loginDto.email,
-        device.deviceId!,
-      );
-      await this.cacheManager.set(blackListToken, hasUser);
-    } else {
-      hasUser = await this.userRepo.findOneBy({ email: loginDto.email });
-    }
+    const hasUser = await this.userRepo.findOneBy({ email: loginDto.email });
 
     if (!hasUser) {
       this._logger.warn('User not found with email: ' + loginDto.email);
@@ -67,8 +56,6 @@ export class AuthService {
         'User does not exist or password is incorrect!',
       );
     }
-
-    console.log(loginDto, hasUser);
 
     const isPasswordValid = await compare(
       loginDto.password.trim(),
@@ -101,10 +88,12 @@ export class AuthService {
     });
 
     return {
-      user: this.userRepo.formatResponse(hasUser),
-      token: {
-        accessToken,
-        refreshToken,
+      data: {
+        user: this.userRepo.formatResponse(hasUser),
+        token: {
+          accessToken,
+          refreshToken,
+        },
       },
     };
   }
@@ -137,9 +126,9 @@ export class AuthService {
     return this.userRepo.formatResponse(newUser);
   }
 
-  async logout(user: User, device: DeviceInfo) {
+  async logout(user: JwtDataReturn, device: DeviceInfo) {
     await this.tokenRepo.getModel().update({
-      where: { userId: user.id, deviceId: device.deviceId },
+      where: { userId: user.user.id, deviceId: device.deviceId },
       data: {
         isRevoked: true,
         isBlacklisted: true,
@@ -148,7 +137,7 @@ export class AuthService {
 
     // Blacklist token in cache
     const blackListToken = this.cacheService.createKeyBlacklistToken(
-      user.email,
+      user.user.email,
       device.deviceId!,
     );
     await this.cacheManager.set(blackListToken, user);
@@ -179,9 +168,7 @@ export class AuthService {
       dto.otp,
       dto.email,
     );
-    console.log('🚀 ~ AuthService ~ verifyOtp ~ cachedOtpKey:', cachedOtpKey);
     const cachedOtp = await this.cacheManager.get<string>(cachedOtpKey);
-    console.log('🚀 ~ AuthService ~ verifyOtp ~ cachedOtp:', cachedOtp);
 
     if (!cachedOtp || cachedOtp !== dto.otp) {
       this._logger.warn(`Invalid or expired OTP for email: ${dto.email}`);
@@ -255,7 +242,6 @@ export class AuthService {
 
     await this.cacheManager.set(cachedOtpKey, otp, 90 * 1000); // OTP valid for 1.5 minutes
     await this.cacheManager.set(rateLimitKey, attempts + 1, 15 * 60 * 1000); // 15 minutes
-    console.log('🚀 ~ AuthService ~ sendOtp ~ cachedOtpKey:', cachedOtpKey);
 
     // Here you would typically send the OTP via email or SMS
     this._logger.log(`OTP for email ${dto.email} is ${otp}`);
@@ -310,8 +296,10 @@ export class AuthService {
     });
 
     return {
-      accessToken,
-      refreshToken,
+      data: {
+        accessToken,
+        refreshToken,
+      },
     };
   }
 

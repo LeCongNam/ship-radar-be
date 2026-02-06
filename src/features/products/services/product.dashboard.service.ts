@@ -1,33 +1,56 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
+
+import { Product, User } from '../../../../generated/prisma/client';
 import { PaginationDto } from '../../../infrastructure/dto';
 import { ProductRepository } from '../../../infrastructure/repositories';
 import { CreateProductDto } from '../dto/create-product.dto';
-import { FindAllProductDto } from '../dto/find-all-product.dto';
+import { FindAllProductDto, STOCK_STATUS } from '../dto/find-all-product.dto';
 import { UpdateProductDto } from '../dto/update-product.dto';
+import { ProductHelperService } from './product-helper.service';
 
 @Injectable()
 export class ProductDashboardService {
-  constructor(private readonly productRepository: ProductRepository) {}
+  constructor(
+    private readonly productRepository: ProductRepository,
+    private readonly productHelperService: ProductHelperService,
+  ) {}
 
-  async create(createProductDto: CreateProductDto) {
-    return this.productRepository.create(createProductDto as any);
+  async create(createProductDto: CreateProductDto, user: { user: User }) {
+    const productCode = this.productHelperService.createProductCode();
+    createProductDto.productCode = productCode;
+
+    createProductDto.ownerId = user.user.id;
+
+    createProductDto.productCodeFilter = productCode.slice(-4);
+
+    return this.productRepository.create(
+      createProductDto as unknown as Product,
+    );
   }
 
   async findAll(query: FindAllProductDto) {
-    const {
-      page = 1,
-      pageSize = 10,
-      search,
-      where,
-      skip,
-    } = new PaginationDto(query);
+    const stockStatus = query.stockStatus;
+
+    delete query.stockStatus;
+
+    const { page, pageSize, search, where, skip } = new PaginationDto(query);
 
     if (search) {
       where.OR = [
         { name: { contains: search } },
-        { description: { contains: search } },
         { sku: { contains: search } },
+        { productCode: { contains: search } },
       ];
+    }
+
+    if (stockStatus) {
+      if (stockStatus === STOCK_STATUS.IN_STOCK) {
+        where.stock = { gt: 0 };
+      }
+
+      if (stockStatus === STOCK_STATUS.OUT_OF_STOCK) {
+        where.stock = { equals: 0 };
+      }
     }
 
     const [data, total] = await Promise.all([
@@ -47,7 +70,7 @@ export class ProductDashboardService {
 
     return {
       data,
-      meta: {
+      metadata: {
         total,
         page,
         pageSize,
@@ -83,8 +106,6 @@ export class ProductDashboardService {
     if (updateProductDto.price !== undefined) {
       data.price = updateProductDto.price.toString();
     }
-
-    console.log(data);
 
     return this.productRepository.update(id, data);
   }

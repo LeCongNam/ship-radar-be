@@ -4,9 +4,11 @@ import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
 import type { Cache } from 'cache-manager';
 import { ExtractJwt, Strategy } from 'passport-jwt';
-import { User } from '../../../../generated/prisma/browser';
 import { JWT_CONSTANTS } from '../../../infrastructure/constants';
-import { UserRepository } from '../../../infrastructure/repositories';
+import {
+  UserRepository,
+  UserRoleRepository,
+} from '../../../infrastructure/repositories';
 import { CacheService } from '../../../infrastructure/shared/cache.service';
 
 @Injectable()
@@ -19,6 +21,7 @@ export class JwtStrategy extends PassportStrategy(
     private _userRepo: UserRepository,
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
     private cacheService: CacheService,
+    private userRoleRepo: UserRoleRepository,
   ) {
     const jwtSecret = _configSrv.get<string>('JWT_SECRET');
     if (!jwtSecret) {
@@ -33,20 +36,26 @@ export class JwtStrategy extends PassportStrategy(
     });
   }
 
-  async validate(payload: TokenPayload): Promise<User> {
-    const userInfoCacheKey = this.cacheService.createCacheKeyAuth(
-      payload.email,
-    );
-    const cacheResult = await this.cacheManager.get<User>(userInfoCacheKey);
-    if (cacheResult) {
-      return cacheResult;
-    }
-
+  async validate(payload: TokenPayload): Promise<JwtDataReturn> {
     const user = await this._userRepo.findOneBy({ id: payload.userId });
+    const usrRole = (await this.userRoleRepo.getModel().findMany({
+      where: {
+        userId: payload.userId,
+      },
+      include: {
+        role: true,
+      },
+    })) as any[];
+
+    const roles = usrRole.map((ur) => ur?.role?.name);
+
     if (!user || !user.isActive) {
       throw new UnauthorizedException();
     }
 
-    return user;
+    return {
+      user,
+      roles,
+    };
   }
 }

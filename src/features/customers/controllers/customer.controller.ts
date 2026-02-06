@@ -9,7 +9,7 @@ import {
   Req,
   UseGuards,
 } from '@nestjs/common';
-import express from 'express';
+import { type Request } from 'express';
 import { BaseController } from '../../../infrastructure/shared/base.controller';
 import { JwtAuthenticationGuard } from '../../auth/guards/jwt-auth.guard';
 import { CreateCustomerDto } from '../dto/create-customer.dto';
@@ -29,14 +29,10 @@ export class CustomerController extends BaseController {
   }
 
   @Get('profile')
-  findOne(@Req() request: express.Request) {
-    const user = this.getUserInfo(request);
+  findOne(@Req() request: Request) {
+    const userInfo = this.getUserInfo(request);
 
-    if (!user) {
-      throw new Error('User not found');
-    }
-
-    return this.customerService.getProfile(user);
+    return this.customerService.getProfile(userInfo.user);
   }
 
   @Get()

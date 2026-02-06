@@ -1,4 +1,4 @@
-export {};
+export { };
 
 declare global {
   type TokenPayload = {
@@ -26,5 +26,10 @@ declare global {
       totalPages: null | number;
     };
     statusCode: number;
+  };
+
+  type JwtDataReturn = {
+    user: User;
+    roles: string[]; // role names
   };
 }

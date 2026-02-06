@@ -3,18 +3,24 @@ import {
   Controller,
   Delete,
   Get,
+  HttpCode,
+  HttpStatus,
   Param,
   Patch,
   Post,
   Query,
+  Req,
+  UseGuards,
 } from '@nestjs/common';
+import express from 'express';
 import { BaseController } from '../../../infrastructure/shared/base.controller';
+import { JwtAuthenticationGuard } from '../../auth/guards/jwt-auth.guard';
 import { CreateProductDto } from '../dto/create-product.dto';
 import { FindAllProductDto } from '../dto/find-all-product.dto';
 import { UpdateProductDto } from '../dto/update-product.dto';
 import { ProductDashboardService } from '../services/product.dashboard.service';
-
 @Controller('dashboard/products')
+@UseGuards(JwtAuthenticationGuard)
 export class ProductDashboardController extends BaseController {
   constructor(
     private readonly productDashboardService: ProductDashboardService,
@@ -23,8 +29,13 @@ export class ProductDashboardController extends BaseController {
   }
 
   @Post()
-  create(@Body() createProductDto: CreateProductDto) {
-    return this.productDashboardService.create(createProductDto);
+  @HttpCode(HttpStatus.OK)
+  create(
+    @Body() createProductDto: CreateProductDto,
+    @Req() request: express.Request,
+  ) {
+    const user = this.getUserInfo(request);
+    return this.productDashboardService.create(createProductDto, user as any);
   }
 
   @Get()

@@ -35,6 +35,10 @@ export class PaginationDto {
           this.where[key] = isNaN(Number(value)) ? value : Number(value);
         }
       });
+
+      if (partial.search) {
+        this.search = partial.search;
+      }
     }
   }
 }

@@ -3,7 +3,7 @@ import {
   RolePermissionRepository,
   RoleRepository,
 } from '../../../infrastructure/repositories';
-import { prisma } from '../../../lib/prisma';
+import { prisma } from '../../../lib/prisma/prisma';
 import { CreateRoleDto } from '../dto/create-role.dto';
 import { UpdateRoleDto } from '../dto/update-role.dto';
 

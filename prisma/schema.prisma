@@ -95,11 +95,15 @@ enum DeviceType {
 
 model UserDevice {
   id         String     @id
-  userId     Int
   deviceType DeviceType
   osVersion  String?
   lastUsedAt DateTime   @default(now())
   createdAt  DateTime   @default(now())
+
+
+  userId            Int
+
+  
 
   user   User    @relation(fields: [userId], references: [id])
   tokens Token[]
@@ -116,6 +120,13 @@ model Product {
   categoryId String
 
   category Category @relation(fields: [categoryId], references: [id])
+
+
+  ownerId            Int
+  productCode String @unique
+  productCodeFilter String
+
+  @@index([ownerId, productCodeFilter])
 
   isActive   Boolean     @default(true)
   createdAt  DateTime    @default(now())
@@ -137,7 +148,7 @@ model Category {
 }
 
 model Shop {
-  id      String  @id
+  id      Int  @id @default(autoincrement())
   name    String
   ownerId Int
   address String?
@@ -153,7 +164,7 @@ model Shop {
 }
 
 model Order {
-  id         Int      @id @default(autoincrement())
+  id         String @id  @default(uuid())
   totalPrice Decimal  @db.Decimal(10, 2) // Tổng giá trị đơn hàng tại thời điểm đặt hàng
   status     String
   createdAt  DateTime @default(now())
@@ -165,8 +176,13 @@ model Order {
 
   noted String?
 
-  shopId     String
+  shopId     Int
   shop       Shop        @relation(fields: [shopId], references: [id])
+
+ orderBarcode String
+ orderBarcodeFilter String
+  @@index([shopId, orderBarcodeFilter])
+
   orderItems OrderItem[]
 
   shippings Shipping[]
@@ -174,7 +190,7 @@ model Order {
 
 model OrderItem {
   id        Int     @id @default(autoincrement())
-  orderId   Int
+  orderId   String
   productId String
   quantity  Int
   price     Decimal @db.Decimal(10, 2) // Giá tại thời điểm đặt hàng
@@ -206,7 +222,7 @@ model DeliveryBrand {
 
 model Shipping {
   id      Int @id @default(autoincrement())
-  orderId Int
+  orderId String
 
   deliveryBrandId Int
   trackingNumber  String  @unique

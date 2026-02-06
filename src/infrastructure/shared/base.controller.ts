@@ -5,8 +5,7 @@ import {
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
-import express from 'express';
-import { User } from '../../../generated/prisma/client';
+import { type Request } from 'express';
 import { TransformResponseInterceptor } from '../decorators/transform-response.interceptor';
 
 @Controller()
@@ -21,7 +20,7 @@ import { TransformResponseInterceptor } from '../decorators/transform-response.i
 )
 @UseInterceptors(TransformResponseInterceptor)
 export class BaseController {
-  getDeviceInfo(@Req() req: express.Request): DeviceInfo {
+  getDeviceInfo(@Req() req: Request): DeviceInfo {
     return {
       deviceId: (req.headers['x-device-id'] as unknown as string) || null,
       deviceType: (req.headers['x-device-type'] as unknown as string) || null,
@@ -29,11 +28,14 @@ export class BaseController {
     };
   }
 
-  getUserInfo(@Req() req: express.Request): User | null {
-    return (req?.['user'] as User) || null;
+  getUserInfo(@Req() req: Request): JwtDataReturn {
+    if (!req?.['user']) {
+      throw new Error('User info not found in request');
+    }
+    return req?.['user'] as JwtDataReturn;
   }
 
-  getHeader(@Req() req: express.Request, headerName: string): string | null {
+  getHeader(@Req() req: Request, headerName: string): string | null {
     return (req.headers[headerName.toLowerCase()] as unknown as string) || null;
   }
 }

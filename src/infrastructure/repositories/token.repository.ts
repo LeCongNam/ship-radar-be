@@ -3,7 +3,7 @@ import { JwtService, JwtSignOptions } from '@nestjs/jwt';
 import ms from 'ms'; // Import thư viện ms
 import { DeviceType, Token } from '../../../generated/prisma/client';
 import { GenerateTokensPayload } from '../../features/auth/services/auth.service';
-import { prisma } from '../../lib/prisma';
+import { prisma } from '../../lib/prisma/prisma';
 import { BaseRepository } from './base.repository';
 import { UserDeviceRepository } from './device.repository';
 
@@ -48,8 +48,8 @@ export class TokenRepository extends BaseRepository<Token> {
   ): Promise<string> {
     try {
       const expiresIn =
-        options?.expiresIn || process.env.JWT_EXPIRES_IN! || '1h';
-      const secret = process.env.JWT_SECRET || 'default_secret';
+        options?.expiresIn || process.env.JWT_REFRESH_EXPIRES_IN! || '7 days';
+      const secret = process.env.JWT_REFRESH_SECRET!;
 
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
@@ -96,8 +96,6 @@ export class TokenRepository extends BaseRepository<Token> {
       id: payload.deviceId,
       userId: payload.userId,
     });
-
-    console.log(payload);
 
     // Tìm và thu hồi (Revoke) các token cũ của user này
     await this.model.updateMany({

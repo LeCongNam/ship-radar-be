@@ -1,9 +1,10 @@
 import {
-    BadRequestException,
-    Injectable,
-    NotFoundException,
+  BadRequestException,
+  Injectable,
+  NotFoundException,
 } from '@nestjs/common';
 import { UserRepository } from '../../../infrastructure/repositories';
+import { User } from '../entities/user.entity';
 
 @Injectable()
 export class UserDashboardService {
@@ -122,7 +123,7 @@ export class UserDashboardService {
     return this.userRepository.formatResponse(newUser!);
   }
 
-  async findAll() {
+  async findAll(user: User) {
     return this.userRepository.findMany();
   }
 }

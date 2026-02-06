@@ -7,16 +7,19 @@ import {
   Patch,
   Post,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { PERMISSION_CONSTANT } from '../../../infrastructure/constants';
 import { BaseController } from '../../../infrastructure/shared/base.controller';
 import { RequirePermissions } from '../../../infrastructure/shared/permissions.decorator';
+import { JwtAuthenticationGuard } from '../../auth/guards/jwt-auth.guard';
 import { CreateDeliveryBrandDto } from '../dto/create-delivery-brand.dto';
 import { FindAllDeliveryBrandDto } from '../dto/find-all-delivery-brand.dto';
 import { UpdateDeliveryBrandDto } from '../dto/update-delivery-brand.dto';
 import { DeliveryBrandDashboardService } from '../services/delivery-brand.dashboard.service';
 
 @Controller('dashboard/delivery-brands')
+@UseGuards(JwtAuthenticationGuard)
 export class DeliveryBrandDashboardController extends BaseController {
   constructor(
     private readonly deliveryBrandDashboardService: DeliveryBrandDashboardService,

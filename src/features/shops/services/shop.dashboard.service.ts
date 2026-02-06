@@ -50,13 +50,10 @@ export class ShopDashboardService {
     return {
       data: shops,
       total,
-      page,
-      pageSize,
-      totalPages: Math.ceil(total / pageSize),
     };
   }
 
-  async getById(id: string) {
+  async getById(id: number) {
     const shop = await this.shopRepository.findUnique({
       where: { id },
       include: {
@@ -86,20 +83,15 @@ export class ShopDashboardService {
     return shop;
   }
 
-  async create(createShopDto: CreateShopDto) {
-    // Check if shop with this ID already exists
-    const existingShop = await this.shopRepository.findById(createShopDto.id);
-    if (existingShop) {
-      throw new BadRequestException(
-        `Shop with ID ${createShopDto.id} already exists`,
-      );
-    }
-
-    const shop = await this.shopRepository.create(createShopDto);
+  async create(createShopDto: CreateShopDto, user: any) {
+    const shop = await this.shopRepository.create({
+      ...createShopDto,
+      ownerId: user.user.id,
+    });
     return shop;
   }
 
-  async update(id: string, updateShopDto: UpdateShopDto) {
+  async update(id: number, updateShopDto: UpdateShopDto) {
     // Check if shop exists
     const existingShop = await this.shopRepository.findById(id);
     if (!existingShop) {
@@ -110,7 +102,7 @@ export class ShopDashboardService {
     return shop;
   }
 
-  async delete(id: string) {
+  async delete(id: number) {
     // Check if shop exists
     const existingShop = await this.shopRepository.findById(id);
     if (!existingShop) {
@@ -139,7 +131,7 @@ export class ShopDashboardService {
     return shop;
   }
 
-  async toggleActive(id: string) {
+  async toggleActive(id: number) {
     const existingShop = await this.shopRepository.findById(id);
     if (!existingShop) {
       throw new NotFoundException(`Shop with ID ${id} not found`);
@@ -151,7 +143,7 @@ export class ShopDashboardService {
     return shop;
   }
 
-  async getStatistics(id: string) {
+  async getStatistics(id: number) {
     const shop = (await this.shopRepository.findUnique({
       where: { id },
       include: {
