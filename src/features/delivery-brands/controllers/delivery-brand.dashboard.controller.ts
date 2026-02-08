@@ -10,8 +10,8 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { PERMISSION_CONSTANT } from '../../../infrastructure/constants';
+import { RequirePermissions } from '../../../infrastructure/decorators/permissions.decorator';
 import { BaseController } from '../../../infrastructure/shared/base.controller';
-import { RequirePermissions } from '../../../infrastructure/shared/permissions.decorator';
 import { JwtAuthenticationGuard } from '../../auth/guards/jwt-auth.guard';
 import { CreateDeliveryBrandDto } from '../dto/create-delivery-brand.dto';
 import { FindAllDeliveryBrandDto } from '../dto/find-all-delivery-brand.dto';

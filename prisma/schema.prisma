@@ -11,7 +11,8 @@ generator client {
 }
 
 datasource db {
-  provider = "mysql"
+  // provider = "mysql"
+  provider = "postgresql"
 }
 
 model User {
@@ -100,10 +101,7 @@ model UserDevice {
   lastUsedAt DateTime   @default(now())
   createdAt  DateTime   @default(now())
 
-
-  userId            Int
-
-  
+  userId Int
 
   user   User    @relation(fields: [userId], references: [id])
   tokens Token[]
@@ -121,17 +119,16 @@ model Product {
 
   category Category @relation(fields: [categoryId], references: [id])
 
-
-  ownerId            Int
-  productCode String @unique
+  ownerId           Int
+  productCode       String @unique
   productCodeFilter String
-
-  @@index([ownerId, productCodeFilter])
 
   isActive   Boolean     @default(true)
   createdAt  DateTime    @default(now())
   updatedAt  DateTime    @default(now()) @updatedAt
   orderItems OrderItem[]
+
+  @@index([ownerId, productCodeFilter])
 }
 
 model Category {
@@ -148,7 +145,7 @@ model Category {
 }
 
 model Shop {
-  id      Int  @id @default(autoincrement())
+  id      Int     @id @default(autoincrement())
   name    String
   ownerId Int
   address String?
@@ -164,7 +161,7 @@ model Shop {
 }
 
 model Order {
-  id         String @id  @default(uuid())
+  id         String   @id @default(uuid())
   totalPrice Decimal  @db.Decimal(10, 2) // Tổng giá trị đơn hàng tại thời điểm đặt hàng
   status     String
   createdAt  DateTime @default(now())
@@ -176,16 +173,18 @@ model Order {
 
   noted String?
 
-  shopId     Int
-  shop       Shop        @relation(fields: [shopId], references: [id])
+  shopId Int
+  shop   Shop @relation(fields: [shopId], references: [id])
 
- orderBarcode String
- orderBarcodeFilter String
-  @@index([shopId, orderBarcodeFilter])
+  orderBarcode       String
+  orderBarcodeFilter String
 
   orderItems OrderItem[]
 
   shippings Shipping[]
+
+  @@index([shopId, orderBarcodeFilter])
+  @@index([shopId, createdAt])
 }
 
 model OrderItem {
@@ -221,7 +220,7 @@ model DeliveryBrand {
 }
 
 model Shipping {
-  id      Int @id @default(autoincrement())
+  id      Int    @id @default(autoincrement())
   orderId String
 
   deliveryBrandId Int
@@ -240,4 +239,9 @@ model Shipping {
   updatedAt DateTime @default(now()) @updatedAt
 
   order Order @relation(fields: [orderId], references: [id])
+}
+
+model OrderCounter {
+  shopId  Int    @id
+  counter Int    @default(0)
 }

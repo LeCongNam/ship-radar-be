@@ -3,6 +3,7 @@ import { JwtModule } from '@nestjs/jwt';
 import {
   CategoryRepository,
   DeliveryBrandRepository,
+  OrderCounterRepository,
   OrderItemRepository,
   OrderRepository,
   ProductRepository,
@@ -30,6 +31,7 @@ const providers = [
   UserDeviceRepository,
   UserRepository,
   UserRoleRepository,
+  OrderCounterRepository,
 ];
 
 @Global()

@@ -59,20 +59,7 @@ export class PermissionsAuthGuard extends AuthGuard([
     }
 
     // Extract user permissions from roles
-    const userPermissions: string[] = [];
-    const userRoles = user.roles || user.userRoles || [];
-
-    userRoles.forEach((userRole: any) => {
-      if (userRole.role?.permissions) {
-        userRole.role.permissions.forEach((perm: any) => {
-          if (typeof perm === 'string') {
-            userPermissions.push(perm);
-          } else if (perm.permission) {
-            userPermissions.push(perm.permission);
-          }
-        });
-      }
-    });
+    const userPermissions: string[] = request.user.permissions || [];
 
     // Check if user has all required permissions
     const hasAllPermissions = requiredPermissions.every((permission) =>

@@ -44,7 +44,7 @@ export class ShopDashboardController extends BaseController {
   @Post()
   create(@Req() request: any, @Body() createShopDto: CreateShopDto) {
     const userInfo = this.getUserInfo(request);
-    return this.shopDashboardService.create(createShopDto, userInfo.user);
+    return this.shopDashboardService.create(createShopDto, userInfo);
   }
 
   @Put(':id')
