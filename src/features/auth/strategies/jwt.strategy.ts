@@ -22,6 +22,7 @@ export class JwtStrategy extends PassportStrategy(
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
     private cacheService: CacheService,
     private userRoleRepo: UserRoleRepository,
+    private permissionRepo: UserRoleRepository,
   ) {
     const jwtSecret = _configSrv.get<string>('JWT_SECRET');
     if (!jwtSecret) {
@@ -38,16 +39,31 @@ export class JwtStrategy extends PassportStrategy(
 
   async validate(payload: TokenPayload): Promise<JwtDataReturn> {
     const user = await this._userRepo.findOneBy({ id: payload.userId });
-    const usrRole = (await this.userRoleRepo.getModel().findMany({
+
+    const usrRoles = (await this.userRoleRepo.getModel().findMany({
       where: {
         userId: payload.userId,
       },
       include: {
-        role: true,
+        role: {
+          include: {
+            permissions: true,
+          },
+        },
       },
     })) as any[];
 
-    const roles = usrRole.map((ur) => ur?.role?.name);
+    const roles = usrRoles.map((usrRole) => usrRole?.role?.name);
+
+    const permissions: string[] = [];
+
+    usrRoles.forEach((usrRole) => {
+      const perms = usrRole?.role?.permissions || [];
+
+      perms.forEach((perm: any) => {
+        permissions.push(perm.permission);
+      });
+    });
 
     if (!user || !user.isActive) {
       throw new UnauthorizedException();
@@ -56,6 +72,7 @@ export class JwtStrategy extends PassportStrategy(
     return {
       user,
       roles,
+      permissions: [...new Set(permissions)],
     };
   }
 }

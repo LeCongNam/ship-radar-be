@@ -13,14 +13,17 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import express from 'express';
+import { PERMISSION_CONSTANT } from '../../../infrastructure/constants';
+import { RequirePermissions } from '../../../infrastructure/decorators/permissions.decorator';
 import { BaseController } from '../../../infrastructure/shared/base.controller';
 import { JwtAuthenticationGuard } from '../../auth/guards/jwt-auth.guard';
+import { PermissionsAuthGuard } from '../../auth/guards/permissions.guard';
 import { CreateProductDto } from '../dto/create-product.dto';
 import { FindAllProductDto } from '../dto/find-all-product.dto';
 import { UpdateProductDto } from '../dto/update-product.dto';
 import { ProductDashboardService } from '../services/product.dashboard.service';
 @Controller('dashboard/products')
-@UseGuards(JwtAuthenticationGuard)
+@UseGuards(JwtAuthenticationGuard, PermissionsAuthGuard)
 export class ProductDashboardController extends BaseController {
   constructor(
     private readonly productDashboardService: ProductDashboardService,
@@ -35,10 +38,11 @@ export class ProductDashboardController extends BaseController {
     @Req() request: express.Request,
   ) {
     const user = this.getUserInfo(request);
-    return this.productDashboardService.create(createProductDto, user as any);
+    return this.productDashboardService.create(createProductDto, user);
   }
 
   @Get()
+  @RequirePermissions(PERMISSION_CONSTANT.VIEW_PRODUCTS)
   findAll(@Query() query: FindAllProductDto) {
     return this.productDashboardService.findAll(query);
   }

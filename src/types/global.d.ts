@@ -31,5 +31,7 @@ declare global {
   type JwtDataReturn = {
     user: User;
     roles: string[]; // role names
+
+    permissions: string[]; // permission names
   };
 }

@@ -3,13 +3,13 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
+import { Order } from '../../../../generated/prisma/client';
 import { PaginationDto } from '../../../infrastructure/dto';
 import {
+  OrderCounterRepository,
   OrderRepository,
   ShopRepository,
 } from '../../../infrastructure/repositories';
-import { prisma } from '../../../lib/prisma/prisma';
-import { QueryBuilder } from '../../../lib/query-builder';
 import { CreateOrderDto } from '../dto/create-order.dto';
 import { FindAllOrderDto } from '../dto/find-all-order.dto';
 import { UpdateOrderDto } from '../dto/update-order.dto';
@@ -21,6 +21,7 @@ export class OrderDashboardService {
   constructor(
     private readonly orderRepository: OrderRepository,
     private shopRepository: ShopRepository,
+    private orderCounterRepository: OrderCounterRepository,
   ) {}
 
   async create(createOrderDto: CreateOrderDto) {
@@ -34,28 +35,61 @@ export class OrderDashboardService {
 
     // Append last four digits to orderBarcodeFilter for easier searching
     orderData['orderBarcodeFilter'] = lastFourDigits;
+    let order: Order;
 
     // Create order with items using prisma directly
-    const order = await this.orderRepository.getModel().create({
-      data: {
-        ...orderData,
-        orderItems: orderItems
-          ? {
+    await this.orderRepository.executeInTransaction(async (tx) => {
+      const totalOrderOfShop = await this.orderCounterRepository.findOneBy(
+        {
+          shopId: orderData.shopId,
+        },
+        tx,
+      );
+
+      order = await this.orderRepository.getModel(tx).create(
+        {
+          ...orderData,
+          ...(orderItems && {
+            orderItems: {
               create: orderItems,
-            }
-          : undefined,
-      },
-      include: {
-        orderItems: {
+            },
+          }),
+        },
+        {
           include: {
-            product: true,
+            orderItems: {
+              include: {
+                product: true,
+              },
+            },
+            shop: true,
           },
         },
-        shop: true,
-      },
+        tx,
+      );
+
+      if (totalOrderOfShop) {
+        await this.orderCounterRepository.update(
+          orderData.shopId,
+          {
+            counter: {
+              increment: 1,
+            },
+          },
+          tx,
+        );
+      } else {
+        await this.orderCounterRepository.create(
+          {
+            shopId: orderData.shopId,
+            counter: 1,
+          },
+          tx,
+        );
+      }
     });
 
-    return order;
+    return order!;
   }
 
   async findAll(query: FindAllOrderDto, userInfo: JwtDataReturn) {
@@ -67,16 +101,7 @@ export class OrderDashboardService {
       },
     });
 
-    const DB_NAME = process.env.DATABASE_NAME;
-    console.log('🚀 ~ OrderDashboardService ~ findAll ~ DB_NAME:', DB_NAME);
-
-    const { params, sql } = QueryBuilder.table('information_schema.tables')
-      .select('TABLE_ROWS as total')
-      .where('table_schema', '=', DB_NAME!)
-      .where('table_name', '=', 'Order')
-      .build();
-
-    const [data, totalCount] = await Promise.all([
+    const [data, totalOrder] = await Promise.all([
       this.orderRepository.findMany({
         where: {
           ...where,
@@ -86,19 +111,25 @@ export class OrderDashboardService {
         },
         skip,
         take: pageSize,
-        // orderBy: { createdAt: 'desc' },
+        orderBy: { createdAt: 'desc' },
         include: {
           shop: true,
           shippings: true,
         },
       }),
-      prisma.$queryRaw`  SELECT TABLE_ROWS as total
-        FROM information_schema.tables
-        WHERE table_schema = ${DB_NAME}
-        AND table_name = 'Order'` as any as Promise<{ total: bigint }[]>,
+      this.orderCounterRepository.findMany({
+        where: {
+          shopId: {
+            in: shopsOfUser.map((shop) => shop.id),
+          },
+        },
+      }),
     ]);
-
-    const total = totalCount.length > 0 ? Number(totalCount[0].total) : 0;
+    console.log(
+      '🚀 ~ OrderDashboardService ~ findAll ~ totalOrder:',
+      totalOrder,
+    );
+    const total = totalOrder?.reduce((acc, item) => acc + item.counter, 0) || 0;
 
     return {
       data,
