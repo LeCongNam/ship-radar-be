@@ -6,6 +6,7 @@ import {
   OrderCounterRepository,
   OrderItemRepository,
   OrderRepository,
+  PermissionRepository,
   ProductRepository,
   RolePermissionRepository,
   RoleRepository,
@@ -32,6 +33,7 @@ const providers = [
   UserRepository,
   UserRoleRepository,
   OrderCounterRepository,
+  PermissionRepository,
 ];
 
 @Global()

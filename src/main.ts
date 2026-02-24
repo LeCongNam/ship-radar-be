@@ -6,10 +6,12 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule, { bufferLogs: true });
 
   app.setGlobalPrefix('api');
+
+  app.enableCors();
+
+
   app.useLogger(app.get(Logger));
   app.useGlobalInterceptors(new LoggerErrorInterceptor());
-  // app.useGlobalInterceptors(new LoggingInterceptor());
-  app.enableCors();
   app.flushLogs();
   const PORT = process.env.PORT || 3001;
 

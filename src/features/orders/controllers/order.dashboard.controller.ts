@@ -13,8 +13,10 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { type Request } from 'express';
+import { Summary } from '../../../infrastructure/decorators/summary.decorator';
 import { BaseController } from '../../../infrastructure/shared/base.controller';
 import { JwtAuthenticationGuard } from '../../auth/guards/jwt-auth.guard';
+import { PermissionsAuthGuard } from '../../auth/guards/permissions.guard';
 import { CreateOrderDto } from '../dto/create-order.dto';
 import { FindAllOrderDto } from '../dto/find-all-order.dto';
 import { UpdateOrderDto } from '../dto/update-order.dto';
@@ -22,7 +24,7 @@ import { UpdateStatusDashboardDto } from '../dto/update-status.dashboard.dto';
 import { OrderDashboardService } from '../services/order.dashboard.service';
 
 @Controller('dashboard/orders')
-@UseGuards(JwtAuthenticationGuard)
+@UseGuards(JwtAuthenticationGuard, PermissionsAuthGuard)
 export class OrderDashboardController extends BaseController {
   constructor(private readonly orderDashboardService: OrderDashboardService) {
     super();
@@ -40,6 +42,7 @@ export class OrderDashboardController extends BaseController {
   }
 
   @Get('statistics')
+  @Summary('Get Order Statistics', 'Lay thong ke don hang')
   getStatistics(@Query('shopId', ParseIntPipe) shopId?: number) {
     return this.orderDashboardService.getOrderStatistics(shopId);
   }

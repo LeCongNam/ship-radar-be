@@ -36,8 +36,7 @@ export abstract class BaseRepository<
     filter: Partial<T>,
     tx?: TransactionClient,
   ): Promise<T | null> {
-    const executor = tx || this.model;
-    return executor.findFirst({ where: filter });
+    return await this.model.findFirst({ where: filter });
   }
 
   async findById(id: any, tx?: TransactionClient): Promise<T | null> {
@@ -63,14 +62,8 @@ export abstract class BaseRepository<
     return await executor.count(args);
   }
 
-  async create(data: Partial<T>, tx?: TransactionClient): Promise<T> {
-    // eslint-disable-next-line no-useless-catch
-    try {
-      const executor = tx || this.model;
-      return executor.create({ data });
-    } catch (error) {
-      throw error;
-    }
+  async create(data: Partial<T>): Promise<T> {
+    return await this.model.create({ data });
   }
 
   async update(id: any, data: any, tx?: TransactionClient): Promise<T> {
@@ -122,11 +115,10 @@ export abstract class BaseRepository<
   }
 
   getModel(
-    tx?: TransactionClient,
   ): baseRepositoryInterface.PrismaModelDelegate<T> | TransactionClient {
-    return tx || this.model;
+    return this.model;
   }
-
+  
   async executeInTransaction<T>(
     callback: (tx: TransactionClient) => Promise<T>,
   ): Promise<T> {

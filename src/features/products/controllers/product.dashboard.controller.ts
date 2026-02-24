@@ -13,8 +13,6 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import express from 'express';
-import { PERMISSION_CONSTANT } from '../../../infrastructure/constants';
-import { RequirePermissions } from '../../../infrastructure/decorators/permissions.decorator';
 import { BaseController } from '../../../infrastructure/shared/base.controller';
 import { JwtAuthenticationGuard } from '../../auth/guards/jwt-auth.guard';
 import { PermissionsAuthGuard } from '../../auth/guards/permissions.guard';
@@ -42,7 +40,6 @@ export class ProductDashboardController extends BaseController {
   }
 
   @Get()
-  @RequirePermissions(PERMISSION_CONSTANT.VIEW_PRODUCTS)
   findAll(@Query() query: FindAllProductDto) {
     return this.productDashboardService.findAll(query);
   }

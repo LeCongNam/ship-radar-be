@@ -50,6 +50,10 @@ model Role {
   users       UserRoles[]
   // Quan hệ 1-nhiều với RolePermissions
   permissions RolePermissions[]
+
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
 }
 
 model UserRoles {
@@ -65,12 +69,27 @@ model UserRoles {
 }
 
 model RolePermissions {
-  id         Int    @id @default(autoincrement())
-  roleId     Int
-  permission String
+  id           Int @id @default(autoincrement())
+  roleId       Int
+  permissionId Int
+
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
 
   // Định nghĩa quan hệ với Role
-  role Role @relation(fields: [roleId], references: [id])
+  role       Role       @relation(fields: [roleId], references: [id])
+  permission Permission @relation(fields: [permissionId], references: [id])
+}
+
+// Permission là tên của hàm, method
+model Permission {
+  id              Int               @id @default(autoincrement())
+  name            String            @unique
+  description     String?
+  module          String?
+  permission      String            
+  rolePermissions RolePermissions[]
 }
 
 model Token {
@@ -162,7 +181,7 @@ model Shop {
 
 model Order {
   id         String   @id @default(uuid())
-  totalPrice Decimal  @db.Decimal(10, 2) // Tổng giá trị đơn hàng tại thời điểm đặt hàng
+  totalPrice Decimal  @db.Decimal(15, 2) // Tổng giá trị đơn hàng tại thời điểm đặt hàng
   status     String
   createdAt  DateTime @default(now())
   updatedAt  DateTime @default(now()) @updatedAt
@@ -192,7 +211,7 @@ model OrderItem {
   orderId   String
   productId String
   quantity  Int
-  price     Decimal @db.Decimal(10, 2) // Giá tại thời điểm đặt hàng
+  price     Decimal @db.Decimal(15, 2) // Giá tại thời điểm đặt hàng
 
   order   Order   @relation(fields: [orderId], references: [id])
   product Product @relation(fields: [productId], references: [id])
@@ -242,6 +261,6 @@ model Shipping {
 }
 
 model OrderCounter {
-  shopId  Int    @id
-  counter Int    @default(0)
+  shopId  Int @id
+  counter Int @default(0)
 }

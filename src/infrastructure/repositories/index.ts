@@ -5,6 +5,7 @@ export * from './device.repository';
 export * from './order-counter.repository';
 export * from './order-item.repository';
 export * from './order.repository';
+export * from './permission.repository';
 export * from './product.repository';
 export * from './role-permission.repository';
 export * from './role.repository';

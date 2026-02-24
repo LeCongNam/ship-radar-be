@@ -1,0 +1,92 @@
+version: '3.8'
+
+services:
+  pg-primary:
+    image: postgres:17-alpine
+    container_name: pg-primary
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=abcd1234
+      - POSTGRES_DB=shipradar
+      - POSTGRES_HOST_AUTH_METHOD=trust
+    command: >
+      postgres -c wal_level=logical 
+               -c max_wal_senders=10 
+               -c max_replication_slots=10 
+               -c hot_standby=on
+               -c wal_keep_size=256MB
+               -c max_wal_size=1GB
+               -c min_wal_size=128MB
+    ports:
+      - '5432:5432'
+    volumes:
+      - pg_primary_data:/var/lib/postgresql/data
+      - ./setup.sh:/docker-entrypoint-initdb.d/setup.sh
+
+  pg-replica:
+    image: postgres:17-alpine
+    container_name: pg-replica
+    depends_on:
+      - pg-primary
+    environment:
+      - PGPASSWORD=abcd1234
+      - POSTGRES_PASSWORD=abcd1234
+    user: root
+    entrypoint: ['/bin/sh', '-c']
+    command: >
+      "until pg_isready -h pg-primary -p 5432 -U postgres; do echo 'Waiting for primary...'; sleep 3; done;
+      if [ ! -s /var/lib/postgresql/data/PG_VERSION ]; then
+        echo 'Cloning data...';
+        pg_basebackup -h pg-primary -D /var/lib/postgresql/data -U postgres -X stream -P -R;
+      fi;
+      echo 'Fixing permissions and ownership...';
+      chmod 700 /var/lib/postgresql/data;
+      chown -R postgres:postgres /var/lib/postgresql/data;
+      echo 'Starting replica as postgres user...';
+      exec docker-entrypoint.sh postgres"
+    ports:
+      - '5433:5432'
+    volumes:
+      - pg_replica_data:/var/lib/postgresql/data
+
+  # --- CÁC DỊCH VỤ KHÁC GIỮ NGUYÊN ---
+  redis:
+    image: redis:7-alpine
+    container_name: redis-server
+    command: redis-server --requirepass abcd1234 --appendonly yes --save 60 1
+    ports:
+      - '6379:6379'
+    volumes:
+      - redis_data:/data
+
+  zookeeper:
+    image: debezium/zookeeper:2.4
+    container_name: zookeeper
+    ports: ['2181:2181']
+
+  kafka:
+    image: debezium/kafka:2.4
+    container_name: kafka
+    depends_on: [zookeeper]
+    ports: ['9092:9092']
+    environment:
+      - ZOOKEEPER_CONNECT=zookeeper:2181
+
+  debezium:
+    image: debezium/connect:2.4
+    container_name: debezium
+    depends_on: [kafka, pg-primary]
+    ports: ['8083:8083']
+    environment:
+      - BOOTSTRAP_SERVERS=kafka:9092
+      - GROUP_ID=1
+      - CONFIG_STORAGE_TOPIC=my_connect_configs
+      - OFFSET_STORAGE_TOPIC=my_connect_offsets
+      - STATUS_STORAGE_TOPIC=my_connect_statuses
+      - CONNECT_VALUE_CONVERTER_SCHEMAS_ENABLE=false
+      - CONNECT_KEY_CONVERTER_SCHEMAS_ENABLE=false
+
+volumes:
+  pg_primary_data:
+  pg_replica_data:
+  redis_data:

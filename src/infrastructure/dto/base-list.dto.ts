@@ -39,6 +39,18 @@ export class PaginationDto {
       if (partial.search) {
         this.search = partial.search;
       }
+
+      if (partial.page) {
+        this.page = Number(partial.page);
+      } else {
+        this.page = 1;
+      }
+
+      if (partial.pageSize) {
+        this.pageSize = Number(partial.pageSize);
+      } else {
+        this.pageSize = 10;
+      }
     }
   }
 }

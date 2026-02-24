@@ -1,33 +1,31 @@
-// import { PrismaMariaDb } from '@prisma/adapter-mariadb';
-import { PrismaPg } from '@prisma/adapter-pg';
-import { withAccelerate } from '@prisma/extension-accelerate';
 import 'dotenv/config';
-import { PrismaClient } from '../../../generated/prisma/client';
-// const adapter = new PrismaMariaDb({
-//   host: process.env.DATABASE_HOST,
-//   user: process.env.DATABASE_USER,
-//   password: process.env.DATABASE_PASSWORD,
-//   database: process.env.DATABASE_NAME,
-//   port: +process.env.DATABASE_PORT!,
-//   connectTimeout: 60000,
-//   ssl: false,
-//   allowPublicKeyRetrieval: true,
-// });
 
-const adapter = new PrismaPg({
-  host: process.env.DATABASE_HOST,
-  user: process.env.DATABASE_USER,
-  password: process.env.DATABASE_PASSWORD,
-  database: process.env.DATABASE_NAME,
-  port: +process.env.DATABASE_PORT!,
+import { PrismaPg } from '@prisma/adapter-pg';
+import { readReplicas } from '@prisma/extension-read-replicas';
+import { PrismaClient } from '../../../generated/prisma/client';
+
+// Create main client with adapter
+const mainAdapter = new PrismaPg({
+  connectionString: process.env.DATABASE_URL!,
   connectTimeout: 60000,
   ssl: false,
   allowPublicKeyRetrieval: true,
 });
 
-const prisma = new PrismaClient({
-  adapter,
-  log: ['query', 'info', 'warn', 'error'],
-}).$extends(withAccelerate());
+const mainClient = new PrismaClient({ adapter: mainAdapter });
+
+// Create replica client with adapter
+const replicaAdapter = new PrismaPg({
+  connectionString: process.env.REPLICA_URL!,
+  connectTimeout: 60000,
+  ssl: false,
+  allowPublicKeyRetrieval: true,
+});
+
+const replicaClient = new PrismaClient({ adapter: replicaAdapter });
+
+// Extend main client with read replicas
+const prisma = mainClient.$extends(readReplicas({ replicas: [replicaClient] }));
 
 export { prisma };
+

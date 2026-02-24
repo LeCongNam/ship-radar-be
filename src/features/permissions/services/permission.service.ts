@@ -1,16 +1,16 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { RolePermissionRepository } from '../../../infrastructure/repositories';
+import { PermissionRepository } from '../../../infrastructure/repositories';
 import { CreatePermissionDto } from '../dto/create-permission.dto';
 import { UpdatePermissionDto } from '../dto/update-permission.dto';
 
 @Injectable()
 export class PermissionService {
   constructor(
-    private readonly rolePermissionRepository: RolePermissionRepository,
+    private readonly permissionRepository: PermissionRepository,
   ) {}
 
   async create(createPermissionDto: CreatePermissionDto) {
-    return this.rolePermissionRepository.create(createPermissionDto as any);
+    return this.permissionRepository.create(createPermissionDto as any);
   }
 
   async findAll(roleId?: number) {
@@ -20,17 +20,14 @@ export class PermissionService {
       where.roleId = roleId;
     }
 
-    return this.rolePermissionRepository.findMany({
-      where,
-      include: {
-        role: true,
-      },
+    return this.permissionRepository.findMany({
+      where, 
       orderBy: { id: 'asc' },
     });
   }
 
   async findOne(id: number) {
-    const permission = await this.rolePermissionRepository.findUnique({
+    const permission = await this.permissionRepository.findUnique({
       where: { id },
       include: {
         role: true,
@@ -45,15 +42,14 @@ export class PermissionService {
   }
 
   async update(id: number, updatePermissionDto: UpdatePermissionDto) {
-    await this.findOne(id);
 
-    return this.rolePermissionRepository.update(id, updatePermissionDto);
+    return this.permissionRepository.update(id, updatePermissionDto);
   }
 
   async remove(id: number) {
     await this.findOne(id);
 
-    return this.rolePermissionRepository.delete({
+    return this.permissionRepository.delete({
       where: { id },
     });
   }

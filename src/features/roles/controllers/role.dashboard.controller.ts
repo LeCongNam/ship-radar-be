@@ -8,14 +8,17 @@ import {
   Post,
   Query,
 } from '@nestjs/common';
+import { BaseController } from '../../../infrastructure/shared/base.controller';
 import { CreateRoleDto } from '../dto/create-role.dto';
 import { FindAllRoleDto } from '../dto/find-all-role.dto';
 import { UpdateRoleDto } from '../dto/update-role.dto';
 import { RoleDashboardService } from '../services/role.dashboard.service';
 
-@Controller('dashboard/role')
-export class RoleDashboardController {
-  constructor(private readonly roleDashboardService: RoleDashboardService) {}
+@Controller('dashboard/roles')
+export class RoleDashboardController extends BaseController{
+  constructor(private readonly roleDashboardService: RoleDashboardService) {
+    super();
+  }
 
   @Post()
   create(@Body() createRoleDto: CreateRoleDto) {
@@ -25,9 +28,7 @@ export class RoleDashboardController {
   @Get()
   findAll(@Query() query: FindAllRoleDto) {
     return this.roleDashboardService.findAll(
-      query.page,
-      query.pageSize,
-      query.search,
+     query
     );
   }
 
@@ -49,7 +50,7 @@ export class RoleDashboardController {
   @Post(':id/permissions')
   assignPermissions(
     @Param('id') id: string,
-    @Body() body: { permissions: string[] },
+    @Body() body: { permissions: number[] },
   ) {
     return this.roleDashboardService.assignPermissions(+id, body.permissions);
   }

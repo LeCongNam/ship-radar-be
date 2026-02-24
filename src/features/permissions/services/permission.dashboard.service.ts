@@ -1,6 +1,8 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { PERMISSIONS_LIST } from '../../../infrastructure/constants';
-import { RolePermissionRepository } from '../../../infrastructure/repositories';
+import {
+  PermissionRepository,
+  RolePermissionRepository,
+} from '../../../infrastructure/repositories';
 import { prisma } from '../../../lib/prisma/prisma';
 import { CreatePermissionDto } from '../dto/create-permission.dto';
 import { UpdatePermissionDto } from '../dto/update-permission.dto';
@@ -9,13 +11,16 @@ import { UpdatePermissionDto } from '../dto/update-permission.dto';
 export class PermissionDashboardService {
   constructor(
     private readonly rolePermissionRepository: RolePermissionRepository,
+    private readonly permissionRepository: PermissionRepository,
   ) {}
 
   async getAllPermissions() {
-    return {
-      data: PERMISSIONS_LIST,
-      total: PERMISSIONS_LIST.length,
-    };
+    const [data, total] = await Promise.all([
+      this.permissionRepository.findMany({ orderBy: { id: 'asc' } }),
+      this.permissionRepository.count(),
+    ]);
+
+    return { data, total };
   }
 
   async create(createPermissionDto: CreatePermissionDto) {
@@ -40,26 +45,18 @@ export class PermissionDashboardService {
     }
 
     const [data, total] = await Promise.all([
-      this.rolePermissionRepository.findMany({
+      this.permissionRepository.findMany({
         where,
         skip,
         take: limit,
-        include: {
-          role: true,
-        },
         orderBy: { id: 'asc' },
       }),
-      this.rolePermissionRepository.count({ where }),
+      this.permissionRepository.count({ where }),
     ]);
 
     return {
       data,
-      meta: {
-        total,
-        page,
-        limit,
-        totalPages: Math.ceil(total / limit),
-      },
+      total
     };
   }
 

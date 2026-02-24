@@ -5,10 +5,10 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { CacheableMemory } from 'cacheable';
 import { Keyv } from 'keyv';
 import {
-  AcceptLanguageResolver,
-  HeaderResolver,
-  I18nModule,
-  QueryResolver,
+    AcceptLanguageResolver,
+    HeaderResolver,
+    I18nModule,
+    QueryResolver,
 } from 'nestjs-i18n';
 import { LoggerModule } from 'nestjs-pino';
 import { join } from 'path';
@@ -30,6 +30,7 @@ import { UserDeviceModule } from './features/user-devices/user-device.module';
 import { UserRoleModule } from './features/user-roles/user-role.module';
 import { UserModule } from './features/users/user.module';
 import { RepositoryModule } from './infrastructure/repositories/repository.module';
+import { ControllerDiscoveryModule } from './infrastructure/shared/discovery/controller-discovery.module';
 
 @Module({
   imports: [
@@ -64,7 +65,8 @@ import { RepositoryModule } from './infrastructure/repositories/repository.modul
                 target: 'pino-pretty',
                 options: {
                   colorize: true,
-                  singleLine: process.env.NODE_ENV === 'production', // Giúp log gọn hơn trên 1 dòng
+                  // singleLine: process.env.NODE_ENV === 'production', // Giúp log gọn hơn trên 1 dòng
+                  singleLine: true, // Giúp log gọn hơn trên 1 dòng
                   translateTime: 'SYS:standard', // Hiển thị thời gian dễ đọc
                 },
               }
@@ -99,6 +101,7 @@ import { RepositoryModule } from './infrastructure/repositories/repository.modul
     }),
     AuthModule,
     RepositoryModule,
+    ControllerDiscoveryModule,
     CustomerModule,
     RoleModule,
     UserRoleModule,

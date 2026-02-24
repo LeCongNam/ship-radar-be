@@ -8,16 +8,19 @@ import {
   Post,
   Query,
 } from '@nestjs/common';
+import { BaseController } from '../../../infrastructure/shared/base.controller';
 import { CreatePermissionDto } from '../dto/create-permission.dto';
 import { FindAllPermissionDto } from '../dto/find-all-permission.dto';
 import { UpdatePermissionDto } from '../dto/update-permission.dto';
 import { PermissionDashboardService } from '../services/permission.dashboard.service';
 
-@Controller('dashboard/permission')
-export class PermissionDashboardController {
+@Controller('dashboard/permissions')
+export class PermissionDashboardController extends BaseController {
   constructor(
     private readonly permissionDashboardService: PermissionDashboardService,
-  ) {}
+  ) {
+    super();
+  }
 
   @Post()
   create(@Body() createPermissionDto: CreatePermissionDto) {

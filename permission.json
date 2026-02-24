@@ -1,0 +1,1208 @@
+[
+    {
+        "controller": "AppController",
+        "methods": [
+            {
+                "name": "getHealth",
+                "description": "",
+                "httpMethod": "GET",
+                "path": "health",
+                "permission": "view:APP:GET_HEALTH"
+            }
+        ]
+    },
+    {
+        "controller": "AuthController",
+        "methods": [
+            {
+                "name": "login",
+                "description": "",
+                "httpMethod": "POST",
+                "path": "login",
+                "permission": "create:AUTH:LOGIN"
+            },
+            {
+                "name": "register",
+                "description": "",
+                "httpMethod": "POST",
+                "path": "register",
+                "permission": "create:AUTH:REGISTER"
+            },
+            {
+                "name": "logout",
+                "description": "",
+                "httpMethod": "POST",
+                "path": "logout",
+                "permission": "create:AUTH:LOGOUT"
+            },
+            {
+                "name": "verifyOtp",
+                "description": "",
+                "httpMethod": "POST",
+                "path": "verify-otp",
+                "permission": "create:AUTH:VERIFY_OTP"
+            },
+            {
+                "name": "SendOtp",
+                "description": "",
+                "httpMethod": "POST",
+                "path": "send-otp",
+                "permission": "create:AUTH:SEND_OTP"
+            },
+            {
+                "name": "getProfile",
+                "description": "",
+                "httpMethod": "GET",
+                "path": "profile",
+                "permission": "view:AUTH:GET_PROFILE"
+            },
+            {
+                "name": "refreshToken",
+                "description": "",
+                "httpMethod": "POST",
+                "path": "refresh",
+                "permission": "create:AUTH:REFRESH_TOKEN"
+            },
+            {
+                "name": "update",
+                "description": "",
+                "httpMethod": "PATCH",
+                "path": ":id",
+                "permission": "update:AUTH:UPDATE"
+            }
+        ]
+    },
+    {
+        "controller": "AuthDashboardController",
+        "methods": [
+            {
+                "name": "initDashboard",
+                "description": "",
+                "httpMethod": "POST",
+                "path": "init",
+                "permission": "create:AUTH_DASHBOARD:INIT_DASHBOARD"
+            }
+        ]
+    },
+    {
+        "controller": "CustomerController",
+        "methods": [
+            {
+                "name": "create",
+                "description": "",
+                "httpMethod": "POST",
+                "path": "/",
+                "permission": "create:CUSTOMER:CREATE"
+            },
+            {
+                "name": "findOne",
+                "description": "",
+                "httpMethod": "GET",
+                "path": "profile",
+                "permission": "view:CUSTOMER:FIND_ONE"
+            },
+            {
+                "name": "findAll",
+                "description": "",
+                "httpMethod": "GET",
+                "path": "/",
+                "permission": "view:CUSTOMER:FIND_ALL"
+            },
+            {
+                "name": "update",
+                "description": "",
+                "httpMethod": "PATCH",
+                "path": ":id",
+                "permission": "update:CUSTOMER:UPDATE"
+            },
+            {
+                "name": "remove",
+                "description": "",
+                "httpMethod": "DELETE",
+                "path": ":id",
+                "permission": "delete:CUSTOMER:REMOVE"
+            }
+        ]
+    },
+    {
+        "controller": "RoleController",
+        "methods": [
+            {
+                "name": "create",
+                "description": "",
+                "httpMethod": "POST",
+                "path": "/",
+                "permission": "create:ROLE:CREATE"
+            },
+            {
+                "name": "findAll",
+                "description": "",
+                "httpMethod": "GET",
+                "path": "/",
+                "permission": "view:ROLE:FIND_ALL"
+            },
+            {
+                "name": "findOne",
+                "description": "",
+                "httpMethod": "GET",
+                "path": ":id",
+                "permission": "view:ROLE:FIND_ONE"
+            },
+            {
+                "name": "update",
+                "description": "",
+                "httpMethod": "PATCH",
+                "path": ":id",
+                "permission": "update:ROLE:UPDATE"
+            },
+            {
+                "name": "remove",
+                "description": "",
+                "httpMethod": "DELETE",
+                "path": ":id",
+                "permission": "delete:ROLE:REMOVE"
+            }
+        ]
+    },
+    {
+        "controller": "RoleDashboardController",
+        "methods": [
+            {
+                "name": "create",
+                "description": "",
+                "httpMethod": "POST",
+                "path": "/",
+                "permission": "create:ROLE_DASHBOARD:CREATE"
+            },
+            {
+                "name": "findAll",
+                "description": "",
+                "httpMethod": "GET",
+                "path": "/",
+                "permission": "view:ROLE_DASHBOARD:FIND_ALL"
+            },
+            {
+                "name": "findOne",
+                "description": "",
+                "httpMethod": "GET",
+                "path": ":id",
+                "permission": "view:ROLE_DASHBOARD:FIND_ONE"
+            },
+            {
+                "name": "update",
+                "description": "",
+                "httpMethod": "PATCH",
+                "path": ":id",
+                "permission": "update:ROLE_DASHBOARD:UPDATE"
+            },
+            {
+                "name": "remove",
+                "description": "",
+                "httpMethod": "DELETE",
+                "path": ":id",
+                "permission": "delete:ROLE_DASHBOARD:REMOVE"
+            },
+            {
+                "name": "assignPermissions",
+                "description": "",
+                "httpMethod": "POST",
+                "path": ":id/permissions",
+                "permission": "create:ROLE_DASHBOARD:ASSIGN_PERMISSIONS"
+            },
+            {
+                "name": "getUsersByRole",
+                "description": "",
+                "httpMethod": "GET",
+                "path": ":id/users",
+                "permission": "view:ROLE_DASHBOARD:GET_USERS_BY_ROLE"
+            }
+        ]
+    },
+    {
+        "controller": "UserRoleController",
+        "methods": [
+            {
+                "name": "create",
+                "description": "",
+                "httpMethod": "POST",
+                "path": "/",
+                "permission": "create:USER_ROLE:CREATE"
+            },
+            {
+                "name": "findAll",
+                "description": "",
+                "httpMethod": "GET",
+                "path": "/",
+                "permission": "view:USER_ROLE:FIND_ALL"
+            },
+            {
+                "name": "findOne",
+                "description": "",
+                "httpMethod": "GET",
+                "path": ":id",
+                "permission": "view:USER_ROLE:FIND_ONE"
+            },
+            {
+                "name": "update",
+                "description": "",
+                "httpMethod": "PATCH",
+                "path": ":id",
+                "permission": "update:USER_ROLE:UPDATE"
+            },
+            {
+                "name": "remove",
+                "description": "",
+                "httpMethod": "DELETE",
+                "path": ":id",
+                "permission": "delete:USER_ROLE:REMOVE"
+            }
+        ]
+    },
+    {
+        "controller": "PermissionController",
+        "methods": [
+            {
+                "name": "create",
+                "description": "",
+                "httpMethod": "POST",
+                "path": "/",
+                "permission": "create:PERMISSION:CREATE"
+            },
+            {
+                "name": "findAll",
+                "description": "",
+                "httpMethod": "GET",
+                "path": "/",
+                "permission": "view:PERMISSION:FIND_ALL"
+            },
+            {
+                "name": "findOne",
+                "description": "",
+                "httpMethod": "GET",
+                "path": ":id",
+                "permission": "view:PERMISSION:FIND_ONE"
+            },
+            {
+                "name": "update",
+                "description": "",
+                "httpMethod": "PATCH",
+                "path": ":id",
+                "permission": "update:PERMISSION:UPDATE"
+            },
+            {
+                "name": "remove",
+                "description": "",
+                "httpMethod": "DELETE",
+                "path": ":id",
+                "permission": "delete:PERMISSION:REMOVE"
+            }
+        ]
+    },
+    {
+        "controller": "PermissionDashboardController",
+        "methods": [
+            {
+                "name": "create",
+                "description": "",
+                "httpMethod": "POST",
+                "path": "/",
+                "permission": "create:PERMISSION_DASHBOARD:CREATE"
+            },
+            {
+                "name": "getAllPermissions",
+                "description": "",
+                "httpMethod": "GET",
+                "path": "list",
+                "permission": "view:PERMISSION_DASHBOARD:GET_ALL_PERMISSIONS"
+            },
+            {
+                "name": "findAll",
+                "description": "",
+                "httpMethod": "GET",
+                "path": "/",
+                "permission": "view:PERMISSION_DASHBOARD:FIND_ALL"
+            },
+            {
+                "name": "findOne",
+                "description": "",
+                "httpMethod": "GET",
+                "path": ":id",
+                "permission": "view:PERMISSION_DASHBOARD:FIND_ONE"
+            },
+            {
+                "name": "update",
+                "description": "",
+                "httpMethod": "PATCH",
+                "path": ":id",
+                "permission": "update:PERMISSION_DASHBOARD:UPDATE"
+            },
+            {
+                "name": "remove",
+                "description": "",
+                "httpMethod": "DELETE",
+                "path": ":id",
+                "permission": "delete:PERMISSION_DASHBOARD:REMOVE"
+            },
+            {
+                "name": "removeByRole",
+                "description": "",
+                "httpMethod": "DELETE",
+                "path": "role/:roleId",
+                "permission": "delete:PERMISSION_DASHBOARD:REMOVE_BY_ROLE"
+            }
+        ]
+    },
+    {
+        "controller": "ProductController",
+        "methods": [
+            {
+                "name": "create",
+                "description": "",
+                "httpMethod": "POST",
+                "path": "/",
+                "permission": "create:PRODUCT:CREATE"
+            },
+            {
+                "name": "findAll",
+                "description": "",
+                "httpMethod": "GET",
+                "path": "/",
+                "permission": "view:PRODUCT:FIND_ALL"
+            },
+            {
+                "name": "findOne",
+                "description": "",
+                "httpMethod": "GET",
+                "path": ":id",
+                "permission": "view:PRODUCT:FIND_ONE"
+            },
+            {
+                "name": "update",
+                "description": "",
+                "httpMethod": "PATCH",
+                "path": ":id",
+                "permission": "update:PRODUCT:UPDATE"
+            },
+            {
+                "name": "remove",
+                "description": "",
+                "httpMethod": "DELETE",
+                "path": ":id",
+                "permission": "delete:PRODUCT:REMOVE"
+            }
+        ]
+    },
+    {
+        "controller": "ProductDashboardController",
+        "methods": [
+            {
+                "name": "create",
+                "description": "",
+                "httpMethod": "POST",
+                "path": "/",
+                "permission": "create:PRODUCT_DASHBOARD:CREATE"
+            },
+            {
+                "name": "findAll",
+                "description": "",
+                "httpMethod": "GET",
+                "path": "/",
+                "permission": "view:PRODUCT_DASHBOARD:FIND_ALL"
+            },
+            {
+                "name": "findOne",
+                "description": "",
+                "httpMethod": "GET",
+                "path": ":id",
+                "permission": "view:PRODUCT_DASHBOARD:FIND_ONE"
+            },
+            {
+                "name": "update",
+                "description": "",
+                "httpMethod": "PATCH",
+                "path": ":id",
+                "permission": "update:PRODUCT_DASHBOARD:UPDATE"
+            },
+            {
+                "name": "remove",
+                "description": "",
+                "httpMethod": "DELETE",
+                "path": ":id",
+                "permission": "delete:PRODUCT_DASHBOARD:REMOVE"
+            },
+            {
+                "name": "activate",
+                "description": "",
+                "httpMethod": "PATCH",
+                "path": ":id/activate",
+                "permission": "update:PRODUCT_DASHBOARD:ACTIVATE"
+            },
+            {
+                "name": "deactivate",
+                "description": "",
+                "httpMethod": "PATCH",
+                "path": ":id/deactivate",
+                "permission": "update:PRODUCT_DASHBOARD:DEACTIVATE"
+            },
+            {
+                "name": "updateStock",
+                "description": "",
+                "httpMethod": "PATCH",
+                "path": ":id/update-stock",
+                "permission": "update:PRODUCT_DASHBOARD:UPDATE_STOCK"
+            }
+        ]
+    },
+    {
+        "controller": "OrderController",
+        "methods": [
+            {
+                "name": "create",
+                "description": "",
+                "httpMethod": "POST",
+                "path": "/",
+                "permission": "create:ORDER:CREATE"
+            },
+            {
+                "name": "findAll",
+                "description": "",
+                "httpMethod": "GET",
+                "path": "/",
+                "permission": "view:ORDER:FIND_ALL"
+            },
+            {
+                "name": "findOne",
+                "description": "",
+                "httpMethod": "GET",
+                "path": ":id",
+                "permission": "view:ORDER:FIND_ONE"
+            },
+            {
+                "name": "update",
+                "description": "",
+                "httpMethod": "PATCH",
+                "path": ":id",
+                "permission": "update:ORDER:UPDATE"
+            },
+            {
+                "name": "remove",
+                "description": "",
+                "httpMethod": "DELETE",
+                "path": ":id",
+                "permission": "delete:ORDER:REMOVE"
+            }
+        ]
+    },
+    {
+        "controller": "OrderDashboardController",
+        "methods": [
+            {
+                "name": "create",
+                "description": "",
+                "httpMethod": "POST",
+                "path": "/",
+                "permission": "create:ORDER_DASHBOARD:CREATE"
+            },
+            {
+                "name": "findAll",
+                "description": "",
+                "httpMethod": "GET",
+                "path": "/",
+                "permission": "view:ORDER_DASHBOARD:FIND_ALL"
+            },
+            {
+                "name": "Get Order Statistics",
+                "description": "Lay thong ke don hang",
+                "httpMethod": "GET",
+                "path": "statistics",
+                "permission": "view:ORDER_DASHBOARD:GET_ORDER_STATISTICS"
+            },
+            {
+                "name": "getRecent",
+                "description": "",
+                "httpMethod": "GET",
+                "path": "recent",
+                "permission": "view:ORDER_DASHBOARD:GET_RECENT"
+            },
+            {
+                "name": "findOne",
+                "description": "",
+                "httpMethod": "GET",
+                "path": ":id",
+                "permission": "view:ORDER_DASHBOARD:FIND_ONE"
+            },
+            {
+                "name": "update",
+                "description": "",
+                "httpMethod": "PUT",
+                "path": ":id",
+                "permission": "update:ORDER_DASHBOARD:UPDATE"
+            },
+            {
+                "name": "updateStatus",
+                "description": "",
+                "httpMethod": "PATCH",
+                "path": ":id/status",
+                "permission": "update:ORDER_DASHBOARD:UPDATE_STATUS"
+            },
+            {
+                "name": "remove",
+                "description": "",
+                "httpMethod": "DELETE",
+                "path": ":id",
+                "permission": "delete:ORDER_DASHBOARD:REMOVE"
+            }
+        ]
+    },
+    {
+        "controller": "OrderItemController",
+        "methods": [
+            {
+                "name": "create",
+                "description": "",
+                "httpMethod": "POST",
+                "path": "/",
+                "permission": "create:ORDER_ITEM:CREATE"
+            },
+            {
+                "name": "findAll",
+                "description": "",
+                "httpMethod": "GET",
+                "path": "/",
+                "permission": "view:ORDER_ITEM:FIND_ALL"
+            },
+            {
+                "name": "findOne",
+                "description": "",
+                "httpMethod": "GET",
+                "path": ":id",
+                "permission": "view:ORDER_ITEM:FIND_ONE"
+            },
+            {
+                "name": "update",
+                "description": "",
+                "httpMethod": "PATCH",
+                "path": ":id",
+                "permission": "update:ORDER_ITEM:UPDATE"
+            },
+            {
+                "name": "remove",
+                "description": "",
+                "httpMethod": "DELETE",
+                "path": ":id",
+                "permission": "delete:ORDER_ITEM:REMOVE"
+            }
+        ]
+    },
+    {
+        "controller": "OrderItemDashboardController",
+        "methods": [
+            {
+                "name": "create",
+                "description": "",
+                "httpMethod": "POST",
+                "path": "/",
+                "permission": "create:ORDER_ITEM_DASHBOARD:CREATE"
+            },
+            {
+                "name": "findAll",
+                "description": "",
+                "httpMethod": "GET",
+                "path": "/",
+                "permission": "view:ORDER_ITEM_DASHBOARD:FIND_ALL"
+            },
+            {
+                "name": "findOne",
+                "description": "",
+                "httpMethod": "GET",
+                "path": ":id",
+                "permission": "view:ORDER_ITEM_DASHBOARD:FIND_ONE"
+            },
+            {
+                "name": "update",
+                "description": "",
+                "httpMethod": "PATCH",
+                "path": ":id",
+                "permission": "update:ORDER_ITEM_DASHBOARD:UPDATE"
+            },
+            {
+                "name": "remove",
+                "description": "",
+                "httpMethod": "DELETE",
+                "path": ":id",
+                "permission": "delete:ORDER_ITEM_DASHBOARD:REMOVE"
+            }
+        ]
+    },
+    {
+        "controller": "ShippingController",
+        "methods": [
+            {
+                "name": "create",
+                "description": "",
+                "httpMethod": "POST",
+                "path": "/",
+                "permission": "create:SHIPPING:CREATE"
+            },
+            {
+                "name": "findAll",
+                "description": "",
+                "httpMethod": "GET",
+                "path": "/",
+                "permission": "view:SHIPPING:FIND_ALL"
+            },
+            {
+                "name": "findByTracking",
+                "description": "",
+                "httpMethod": "GET",
+                "path": "tracking/:trackingNumber",
+                "permission": "view:SHIPPING:FIND_BY_TRACKING"
+            },
+            {
+                "name": "findOne",
+                "description": "",
+                "httpMethod": "GET",
+                "path": ":id",
+                "permission": "view:SHIPPING:FIND_ONE"
+            },
+            {
+                "name": "update",
+                "description": "",
+                "httpMethod": "PATCH",
+                "path": ":id",
+                "permission": "update:SHIPPING:UPDATE"
+            },
+            {
+                "name": "remove",
+                "description": "",
+                "httpMethod": "DELETE",
+                "path": ":id",
+                "permission": "delete:SHIPPING:REMOVE"
+            }
+        ]
+    },
+    {
+        "controller": "ShippingDashboardController",
+        "methods": [
+            {
+                "name": "create",
+                "description": "",
+                "httpMethod": "POST",
+                "path": "/",
+                "permission": "create:SHIPPING_DASHBOARD:CREATE"
+            },
+            {
+                "name": "findAll",
+                "description": "",
+                "httpMethod": "GET",
+                "path": "/",
+                "permission": "view:SHIPPING_DASHBOARD:FIND_ALL"
+            },
+            {
+                "name": "findOne",
+                "description": "",
+                "httpMethod": "GET",
+                "path": ":id",
+                "permission": "view:SHIPPING_DASHBOARD:FIND_ONE"
+            },
+            {
+                "name": "update",
+                "description": "",
+                "httpMethod": "PATCH",
+                "path": ":id",
+                "permission": "update:SHIPPING_DASHBOARD:UPDATE"
+            },
+            {
+                "name": "remove",
+                "description": "",
+                "httpMethod": "DELETE",
+                "path": ":id",
+                "permission": "delete:SHIPPING_DASHBOARD:REMOVE"
+            },
+            {
+                "name": "updateStatus",
+                "description": "",
+                "httpMethod": "PATCH",
+                "path": ":id/update-status",
+                "permission": "update:SHIPPING_DASHBOARD:UPDATE_STATUS"
+            }
+        ]
+    },
+    {
+        "controller": "DeliveryBrandController",
+        "methods": [
+            {
+                "name": "create",
+                "description": "",
+                "httpMethod": "POST",
+                "path": "/",
+                "permission": "create:DELIVERY_BRAND:CREATE"
+            },
+            {
+                "name": "findAll",
+                "description": "",
+                "httpMethod": "GET",
+                "path": "/",
+                "permission": "view:DELIVERY_BRAND:FIND_ALL"
+            },
+            {
+                "name": "findOne",
+                "description": "",
+                "httpMethod": "GET",
+                "path": ":id",
+                "permission": "view:DELIVERY_BRAND:FIND_ONE"
+            },
+            {
+                "name": "update",
+                "description": "",
+                "httpMethod": "PATCH",
+                "path": ":id",
+                "permission": "update:DELIVERY_BRAND:UPDATE"
+            },
+            {
+                "name": "remove",
+                "description": "",
+                "httpMethod": "DELETE",
+                "path": ":id",
+                "permission": "delete:DELIVERY_BRAND:REMOVE"
+            }
+        ]
+    },
+    {
+        "controller": "DeliveryBrandDashboardController",
+        "methods": [
+            {
+                "name": "create",
+                "description": "",
+                "httpMethod": "POST",
+                "path": "/",
+                "permission": "create:DELIVERY_BRAND_DASHBOARD:CREATE"
+            },
+            {
+                "name": "findAll",
+                "description": "",
+                "httpMethod": "GET",
+                "path": "/",
+                "permission": "view:DELIVERY_BRAND_DASHBOARD:FIND_ALL"
+            },
+            {
+                "name": "findOne",
+                "description": "",
+                "httpMethod": "GET",
+                "path": ":id",
+                "permission": "view:DELIVERY_BRAND_DASHBOARD:FIND_ONE"
+            },
+            {
+                "name": "update",
+                "description": "",
+                "httpMethod": "PATCH",
+                "path": ":id",
+                "permission": "update:DELIVERY_BRAND_DASHBOARD:UPDATE"
+            },
+            {
+                "name": "remove",
+                "description": "",
+                "httpMethod": "DELETE",
+                "path": ":id",
+                "permission": "delete:DELIVERY_BRAND_DASHBOARD:REMOVE"
+            },
+            {
+                "name": "activate",
+                "description": "",
+                "httpMethod": "PATCH",
+                "path": ":id/activate",
+                "permission": "update:DELIVERY_BRAND_DASHBOARD:ACTIVATE"
+            },
+            {
+                "name": "deactivate",
+                "description": "",
+                "httpMethod": "PATCH",
+                "path": ":id/deactivate",
+                "permission": "update:DELIVERY_BRAND_DASHBOARD:DEACTIVATE"
+            }
+        ]
+    },
+    {
+        "controller": "UserDeviceController",
+        "methods": [
+            {
+                "name": "create",
+                "description": "",
+                "httpMethod": "POST",
+                "path": "/",
+                "permission": "create:USER_DEVICE:CREATE"
+            },
+            {
+                "name": "findAll",
+                "description": "",
+                "httpMethod": "GET",
+                "path": "/",
+                "permission": "view:USER_DEVICE:FIND_ALL"
+            },
+            {
+                "name": "findOne",
+                "description": "",
+                "httpMethod": "GET",
+                "path": ":id",
+                "permission": "view:USER_DEVICE:FIND_ONE"
+            },
+            {
+                "name": "update",
+                "description": "",
+                "httpMethod": "PATCH",
+                "path": ":id",
+                "permission": "update:USER_DEVICE:UPDATE"
+            },
+            {
+                "name": "remove",
+                "description": "",
+                "httpMethod": "DELETE",
+                "path": ":id",
+                "permission": "delete:USER_DEVICE:REMOVE"
+            }
+        ]
+    },
+    {
+        "controller": "CategoryController",
+        "methods": [
+            {
+                "name": "create",
+                "description": "",
+                "httpMethod": "POST",
+                "path": "/",
+                "permission": "create:CATEGORY:CREATE"
+            },
+            {
+                "name": "findAll",
+                "description": "",
+                "httpMethod": "GET",
+                "path": "/",
+                "permission": "view:CATEGORY:FIND_ALL"
+            },
+            {
+                "name": "findOne",
+                "description": "",
+                "httpMethod": "GET",
+                "path": ":id",
+                "permission": "view:CATEGORY:FIND_ONE"
+            },
+            {
+                "name": "update",
+                "description": "",
+                "httpMethod": "PATCH",
+                "path": ":id",
+                "permission": "update:CATEGORY:UPDATE"
+            },
+            {
+                "name": "remove",
+                "description": "",
+                "httpMethod": "DELETE",
+                "path": ":id",
+                "permission": "delete:CATEGORY:REMOVE"
+            }
+        ]
+    },
+    {
+        "controller": "CategoryDashboardController",
+        "methods": [
+            {
+                "name": "create",
+                "description": "",
+                "httpMethod": "POST",
+                "path": "/",
+                "permission": "create:CATEGORY_DASHBOARD:CREATE"
+            },
+            {
+                "name": "findAll",
+                "description": "",
+                "httpMethod": "GET",
+                "path": "/",
+                "permission": "view:CATEGORY_DASHBOARD:FIND_ALL"
+            },
+            {
+                "name": "findOne",
+                "description": "",
+                "httpMethod": "GET",
+                "path": ":id",
+                "permission": "view:CATEGORY_DASHBOARD:FIND_ONE"
+            },
+            {
+                "name": "update",
+                "description": "",
+                "httpMethod": "PATCH",
+                "path": ":id",
+                "permission": "update:CATEGORY_DASHBOARD:UPDATE"
+            },
+            {
+                "name": "remove",
+                "description": "",
+                "httpMethod": "DELETE",
+                "path": ":id",
+                "permission": "delete:CATEGORY_DASHBOARD:REMOVE"
+            },
+            {
+                "name": "activate",
+                "description": "",
+                "httpMethod": "PATCH",
+                "path": ":id/activate",
+                "permission": "update:CATEGORY_DASHBOARD:ACTIVATE"
+            },
+            {
+                "name": "deactivate",
+                "description": "",
+                "httpMethod": "PATCH",
+                "path": ":id/deactivate",
+                "permission": "update:CATEGORY_DASHBOARD:DEACTIVATE"
+            }
+        ]
+    },
+    {
+        "controller": "StaffController",
+        "methods": [
+            {
+                "name": "create",
+                "description": "",
+                "httpMethod": "POST",
+                "path": "/",
+                "permission": "create:STAFF:CREATE"
+            },
+            {
+                "name": "findAll",
+                "description": "",
+                "httpMethod": "GET",
+                "path": "/",
+                "permission": "view:STAFF:FIND_ALL"
+            },
+            {
+                "name": "findOne",
+                "description": "",
+                "httpMethod": "GET",
+                "path": ":id",
+                "permission": "view:STAFF:FIND_ONE"
+            },
+            {
+                "name": "update",
+                "description": "",
+                "httpMethod": "PATCH",
+                "path": ":id",
+                "permission": "update:STAFF:UPDATE"
+            },
+            {
+                "name": "remove",
+                "description": "",
+                "httpMethod": "DELETE",
+                "path": ":id",
+                "permission": "delete:STAFF:REMOVE"
+            }
+        ]
+    },
+    {
+        "controller": "UserController",
+        "methods": [
+            {
+                "name": "create",
+                "description": "",
+                "httpMethod": "POST",
+                "path": "/",
+                "permission": "create:USER:CREATE"
+            },
+            {
+                "name": "findAll",
+                "description": "",
+                "httpMethod": "GET",
+                "path": "/",
+                "permission": "view:USER:FIND_ALL"
+            },
+            {
+                "name": "findOne",
+                "description": "",
+                "httpMethod": "GET",
+                "path": ":id",
+                "permission": "view:USER:FIND_ONE"
+            },
+            {
+                "name": "getDashboard",
+                "description": "",
+                "httpMethod": "GET",
+                "path": ":id/dashboard",
+                "permission": "view:USER:GET_DASHBOARD"
+            },
+            {
+                "name": "update",
+                "description": "",
+                "httpMethod": "PATCH",
+                "path": ":id",
+                "permission": "update:USER:UPDATE"
+            },
+            {
+                "name": "updatePassword",
+                "description": "",
+                "httpMethod": "PUT",
+                "path": ":id/password",
+                "permission": "update:USER:UPDATE_PASSWORD"
+            },
+            {
+                "name": "toggleActive",
+                "description": "",
+                "httpMethod": "PATCH",
+                "path": ":id/toggle-active",
+                "permission": "update:USER:TOGGLE_ACTIVE"
+            },
+            {
+                "name": "remove",
+                "description": "",
+                "httpMethod": "DELETE",
+                "path": ":id",
+                "permission": "delete:USER:REMOVE"
+            }
+        ]
+    },
+    {
+        "controller": "UserDashboardController",
+        "methods": [
+            {
+                "name": "create",
+                "description": "",
+                "httpMethod": "POST",
+                "path": "/",
+                "permission": "create:USER_DASHBOARD:CREATE"
+            },
+            {
+                "name": "getDashboardData",
+                "description": "",
+                "httpMethod": "GET",
+                "path": "data",
+                "permission": "view:USER_DASHBOARD:GET_DASHBOARD_DATA"
+            },
+            {
+                "name": "update",
+                "description": "",
+                "httpMethod": "PATCH",
+                "path": "/",
+                "permission": "update:USER_DASHBOARD:UPDATE"
+            },
+            {
+                "name": "remove",
+                "description": "",
+                "httpMethod": "DELETE",
+                "path": "/",
+                "permission": "delete:USER_DASHBOARD:REMOVE"
+            },
+            {
+                "name": "findAll",
+                "description": "",
+                "httpMethod": "GET",
+                "path": "/",
+                "permission": "view:USER_DASHBOARD:FIND_ALL"
+            },
+            {
+                "name": "updateStatus",
+                "description": "",
+                "httpMethod": "PUT",
+                "path": ":userId/status",
+                "permission": "update:USER_DASHBOARD:UPDATE_STATUS"
+            },
+            {
+                "name": "findOne",
+                "description": "",
+                "httpMethod": "GET",
+                "path": ":userId",
+                "permission": "view:USER_DASHBOARD:FIND_ONE"
+            }
+        ]
+    },
+    {
+        "controller": "ShopController",
+        "methods": [
+            {
+                "name": "create",
+                "description": "",
+                "httpMethod": "POST",
+                "path": "/",
+                "permission": "create:SHOP:CREATE"
+            },
+            {
+                "name": "findAll",
+                "description": "",
+                "httpMethod": "GET",
+                "path": "/",
+                "permission": "view:SHOP:FIND_ALL"
+            },
+            {
+                "name": "findOne",
+                "description": "",
+                "httpMethod": "GET",
+                "path": ":id",
+                "permission": "view:SHOP:FIND_ONE"
+            },
+            {
+                "name": "update",
+                "description": "",
+                "httpMethod": "PATCH",
+                "path": ":id",
+                "permission": "update:SHOP:UPDATE"
+            },
+            {
+                "name": "remove",
+                "description": "",
+                "httpMethod": "DELETE",
+                "path": ":id",
+                "permission": "delete:SHOP:REMOVE"
+            }
+        ]
+    },
+    {
+        "controller": "ShopDashboardController",
+        "methods": [
+            {
+                "name": "getList",
+                "description": "",
+                "httpMethod": "GET",
+                "path": "/",
+                "permission": "view:SHOP_DASHBOARD:GET_LIST"
+            },
+            {
+                "name": "getById",
+                "description": "",
+                "httpMethod": "GET",
+                "path": ":id",
+                "permission": "view:SHOP_DASHBOARD:GET_BY_ID"
+            },
+            {
+                "name": "getStatistics",
+                "description": "",
+                "httpMethod": "GET",
+                "path": ":id/statistics",
+                "permission": "view:SHOP_DASHBOARD:GET_STATISTICS"
+            },
+            {
+                "name": "create",
+                "description": "",
+                "httpMethod": "POST",
+                "path": "/",
+                "permission": "create:SHOP_DASHBOARD:CREATE"
+            },
+            {
+                "name": "update",
+                "description": "",
+                "httpMethod": "PUT",
+                "path": ":id",
+                "permission": "update:SHOP_DASHBOARD:UPDATE"
+            },
+            {
+                "name": "toggleActive",
+                "description": "",
+                "httpMethod": "PATCH",
+                "path": ":id/toggle-active",
+                "permission": "update:SHOP_DASHBOARD:TOGGLE_ACTIVE"
+            },
+            {
+                "name": "delete",
+                "description": "",
+                "httpMethod": "DELETE",
+                "path": ":id",
+                "permission": "delete:SHOP_DASHBOARD:DELETE"
+            }
+        ]
+    }
+]

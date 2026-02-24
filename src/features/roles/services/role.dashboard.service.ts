@@ -1,10 +1,12 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
+import { PaginationDto } from '../../../infrastructure/dto';
 import {
   RolePermissionRepository,
   RoleRepository,
 } from '../../../infrastructure/repositories';
 import { prisma } from '../../../lib/prisma/prisma';
 import { CreateRoleDto } from '../dto/create-role.dto';
+import { FindAllRoleDto } from '../dto/find-all-role.dto';
 import { UpdateRoleDto } from '../dto/update-role.dto';
 
 @Injectable()
@@ -18,10 +20,8 @@ export class RoleDashboardService {
     return this.roleRepository.create(createRoleDto);
   }
 
-  async findAll(page: number = 1, limit: number = 10, search?: string) {
-    const skip = (page - 1) * limit;
-    const where: any = {};
-
+  async findAll(query: FindAllRoleDto) {
+   const { page, pageSize: limit, search, skip, where } = new PaginationDto(query); 
     if (search) {
       where.OR = [
         { name: { contains: search } },
@@ -29,32 +29,16 @@ export class RoleDashboardService {
       ];
     }
 
-    const [data, total] = await Promise.all([
-      this.roleRepository.findMany({
-        where,
-        skip,
-        take: limit,
-        include: {
-          permissions: true,
-          users: {
-            include: {
-              user: true,
-            },
-          },
-        },
-        orderBy: { id: 'asc' },
-      }),
-      this.roleRepository.count({ where }),
-    ]);
+    const [data, total] = await this.roleRepository.findAndCount({
+      where,
+      skip,
+      take: limit,
+      orderBy: { id: 'asc' },
+    })
 
     return {
       data,
-      meta: {
-        total,
-        page,
-        limit,
-        totalPages: Math.ceil(total / limit),
-      },
+      total
     };
   }
 
@@ -79,9 +63,15 @@ export class RoleDashboardService {
   }
 
   async update(id: number, updateRoleDto: UpdateRoleDto) {
-    await this.findOne(id);
+   await this.findOne(id);
 
-    return this.roleRepository.update(id, updateRoleDto);
+   const { permissions, ...rest } = updateRoleDto;
+
+   if (permissions) {
+     await this.assignPermissions(id, permissions);
+   }
+
+    return this.roleRepository.update(id, rest);
   }
 
   async remove(id: number) {
@@ -92,7 +82,7 @@ export class RoleDashboardService {
     });
   }
 
-  async assignPermissions(roleId: number, permissions: string[]) {
+  async assignPermissions(roleId: number, permissions: number[]) {
     await this.findOne(roleId);
 
     // Delete existing permissions
@@ -103,7 +93,7 @@ export class RoleDashboardService {
     // Create new permissions
     const permissionData = permissions.map((permission) => ({
       roleId,
-      permission,
+      permissionId: permission,
     }));
 
     await prisma.rolePermissions.createMany({

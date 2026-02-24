@@ -39,23 +39,22 @@ export class OrderDashboardService {
 
     // Create order with items using prisma directly
     await this.orderRepository.executeInTransaction(async (tx) => {
-      const totalOrderOfShop = await this.orderCounterRepository.findOneBy(
-        {
-          shopId: orderData.shopId,
-        },
-        tx,
-      );
+      try {
+        const totalOrderOfShop = await tx.orderCounter.findFirst({
+          where: {
+            shopId: orderData.shopId,
+          },
+        });
 
-      order = await this.orderRepository.getModel(tx).create(
-        {
-          ...orderData,
-          ...(orderItems && {
-            orderItems: {
-              create: orderItems,
-            },
-          }),
-        },
-        {
+        order = await tx.order.create({
+          data: {
+            ...orderData,
+            ...(orderItems && {
+              orderItems: {
+                create: orderItems,
+              },
+            }),
+          },
           include: {
             orderItems: {
               include: {
@@ -64,28 +63,29 @@ export class OrderDashboardService {
             },
             shop: true,
           },
-        },
-        tx,
-      );
+        });
 
-      if (totalOrderOfShop) {
-        await this.orderCounterRepository.update(
-          orderData.shopId,
-          {
-            counter: {
-              increment: 1,
+        if (totalOrderOfShop) {
+          await tx.orderCounter.update({
+            where: { shopId: orderData.shopId },
+            data: {
+              counter: {
+                increment: 1,
+              },
             },
-          },
-          tx,
-        );
-      } else {
-        await this.orderCounterRepository.create(
-          {
-            shopId: orderData.shopId,
-            counter: 1,
-          },
-          tx,
-        );
+          });
+        } else {
+          await tx.orderCounter.create({
+            data: {
+              shopId: orderData.shopId,
+              counter: 1,
+            },
+          });
+        }
+      } catch (error) {
+        console.error('Transaction create order error', error);
+
+        throw error;
       }
     });
 
@@ -94,6 +94,7 @@ export class OrderDashboardService {
 
   async findAll(query: FindAllOrderDto, userInfo: JwtDataReturn) {
     const { page = 1, pageSize = 10, where, skip } = new PaginationDto(query);
+    console.log('🚀 ~ OrderDashboardService ~ findAll ~ skip:', skip);
 
     const shopsOfUser = await this.shopRepository.findMany({
       where: {
